@@ -6,5 +6,5 @@ from django.http import HttpResponse
 def index(request):
     return render(request, 'index.html')
 
-def evan(request):
-    return render(request, 'evan.html')
+def evan(request,name):
+    return render(request, 'evan.html', {'name': name})
