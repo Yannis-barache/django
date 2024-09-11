@@ -13,7 +13,7 @@ class Product(models.Model):
         name = models.CharField(max_length=100)
         code = models.IntegerField()
         price = models.FloatField()
-        date_fabrication = models.DateField(auto_now_add=True, default=timezone.now())
+        date_fabrication = models.DateField(auto_now_add=True)
         statut = models.ForeignKey(Statut, on_delete=models.CASCADE)
 
 
