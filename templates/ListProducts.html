@@ -7,10 +7,11 @@
 <body>
 {% for product in prdcts %}
     <div>
-        <h1>{{ product.name }}</h1>
+        <h1><a href="{% url 'Tous les produits' %}">{{ product.name }}</a></h1>
         <p>{{ product.price }}</p>
         <p>{{ product.statut.libelle }}</p>
     </div>
 {% endfor %}
+    <p>J'ai {{ prdcts | length }} produits préférés.</p>
 </body>
 </html>

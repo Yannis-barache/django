@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Produit {{product.name}}</title>
+</head>
+<body>
+    <h1>{{product.name}}</h1>
+    <div class="champ">
+        <label for="price">Prix HT</label>
+        <span id="price">{{product.price_ht}}</span>
+    </div>
+    <div class="champ">
+        <label for="price">Prix TTC</label>
+        <span id="price">{{product.price_ttc}}</span>
+    </div>
+    <div class="champ">
+        <label for="price">Disponibilité</label>
+        <span id="price">{{product.status}}</span>
+    </div>
+</body>
+</html>

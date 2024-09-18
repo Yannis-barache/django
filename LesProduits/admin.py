@@ -21,20 +21,6 @@ class ProductFilter(admin.SimpleListFilter):
         if self.value() == 'offline':
             return queryset.filter(status=0)
 
-class ProductAdmin(admin.ModelAdmin):
-    model = Productlist_display = ('name', 'code')
-    inlines = [ProductItemAdmin, ]
-    list_display = ["id", "name", "price_ht", "price_ttc", "code","tax"]
-    list_editable = ["name", "price_ht", "price_ttc"]
-    radio_fields = {"status": admin.VERTICAL}
-    list_filter = (ProductFilter,)
-    def tax(self, instance):
-        return (instance.price_ttc / instance.price_ht) - 1
-
-    tax.short_description = "Taxes (%)"
-
-
-
 def set_product_online(modeladmin, request, queryset):
     queryset.update(status=1)
     set_product_online.short_description = "Mettre en ligne"
@@ -43,6 +29,24 @@ def set_product_online(modeladmin, request, queryset):
 def set_product_offline(modeladmin, request, queryset):
     queryset.update(status=0)
     set_product_offline.short_description = "Mettre hors ligne"
+
+
+class ProductAdmin(admin.ModelAdmin):
+    model = Productlist_display = ('name', 'code')
+    inlines = [ProductItemAdmin, ]
+    list_display = ["id", "name", "price_ht", "price_ttc", "code","tax"]
+    list_editable = ["name", "price_ht", "price_ttc"]
+    radio_fields = {"status": admin.VERTICAL}
+    actions = [set_product_online, set_product_offline]
+    list_filter = (ProductFilter,)
+    def tax(self, instance):
+        return (instance.price_ttc / instance.price_ht) - 1
+
+    tax.short_description = "Taxes (%)"
+    tax.admin_order_field = "price_ht"
+
+
+
 
 
 admin.site.register(Product, ProductAdmin)
