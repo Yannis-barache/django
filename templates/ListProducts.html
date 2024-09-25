@@ -1,17 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% for product in prdcts %}
-    <div>
-        <h1><a href="{% url 'Tous les produits' %}">{{ product.name }}</a></h1>
-        <p>{{ product.price }}</p>
-        <p>{{ product.statut.libelle }}</p>
-    </div>
-{% endfor %}
-    <p>J'ai {{ prdcts | length }} produits préférés.</p>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Liste des produits</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prix HT</th>
+                <th>Prix TTC</th>
+                <th>Disponibilité</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in prdcts %}
+                <tr>
+                    <td><a href="{% url 'detail_produit' product.id %}">{{product.name}}</a></td>
+                    <td>{{product.price_ht}}</td>
+                    <td>{{product.price_ttc}}</td>
+                    {% if product.status == 0 %}
+                        <td>Indisponible</td>
+                    {% else %}
+                        <td>Disponible</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import *
+
 from LesProduits import views
 
 urlpatterns = [
@@ -24,4 +26,5 @@ urlpatterns = [
     path('evan/<name>', views.evan, name='evan'),
 
     path("__debug__/", include("debug_toolbar.urls")),
+    path("home", TemplateView.as_view(template_name="about.html")),
 ]

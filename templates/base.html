@@ -1,17 +1,46 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-    
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
-</head>
-<body>
-    {% block content %}
-        
+<html lang="fr">
+    <head>
+        <meta charset="utf -8">
+        <title>{% block title %}{% endblock %}</title>
+        {% block styles %}
+            <link rel="stylesheet" href="{% static 'styles.css' %}" />
+            <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}">
+        {% endblock %}
+    </head>
+    <body>
+    {% block nav %}
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Tous les produits' %}">Produits</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'About' %}">À propos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'product_attribute' %}">Attributs des produits</a>
+                    </li>
+                </ul>
+            </div>
+        </nav >
+            {% block menu %}
+                
+            {% endblock %}
     {% endblock %}
-
-
-</body>
+    <main role="main" class="container top-pushed">
+        <div class="jumbotron">
+            {% block content %}
+                
+            {% endblock %}
+        </div>
+    </main >
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 - Que à moi </p>
+        </div>
+    </footer>
+    </body>
 </html>

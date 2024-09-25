@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ titremenu }}
+{% endblock %}
+{% block content %}
+    {% for attribute in product_attributes %}
+        {{ attribute }}
+        <div class="champ">
+            <label for="name">{{ attribute.name }}</label>
+        </div>
+    {% endfor %}
+{% endblock %}
