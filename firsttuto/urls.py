@@ -27,4 +27,5 @@ urlpatterns = [
 
     path("__debug__/", include("debug_toolbar.urls")),
     path("home", TemplateView.as_view(template_name="about.html")),
+
 ]
