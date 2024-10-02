@@ -1,10 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound
 from django.views.generic import *
-from LesProduits.models import Product, ProductAttribute
+from firsttuto.LesProduits.models import Product, ProductAttribute
 
 
 # Create your views here.
@@ -24,7 +23,7 @@ class ProductListView(ListView):
 
 
 def About(request):
-    return render(request, 'About.html')
+    return render(request, 'about.html')
 
 
 def Contact(request):
