@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
+from django.forms import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import *
 
@@ -101,3 +103,12 @@ def ProductCreate(request):
     else:
         form = ProductForm()
     return render(request, "new_product.html", {'form': form})
+
+class ProductCreateView(CreateView):
+    model= Product
+    template_name = 'new_product.html'
+    form_class = ProductForm
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('detail_produit', product.id)
