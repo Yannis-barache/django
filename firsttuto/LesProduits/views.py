@@ -1,8 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import *
+
+from firsttuto.LesProduits.forms import ProductForm
 from firsttuto.LesProduits.models import Product, ProductAttribute
 
 
@@ -89,3 +91,13 @@ class DisconnectView(TemplateView):
         print("User is disconnected")
         logout(request)
         return render(request, 'index.html')
+
+def ProductCreate(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save()
+            return redirect('detail_produit', product.id)
+    else:
+        form = ProductForm()
+    return render(request, "new_product.html", {'form': form})
