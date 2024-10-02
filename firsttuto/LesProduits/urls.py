@@ -6,7 +6,7 @@ urlpatterns = [
     path('contact', views.Contact, name='Contact'),
     path('about', views.About, name='About'),
 
-    path('product/list/<pk>', views.ProductDetailView.as_view(), name='detail_produit'),
+    path('product/<pk>', views.ProductDetailView.as_view(), name='detail_produit'),
     path('product_attribute', views.ProductAttributeView.as_view(), name='product_attribute'),
 
     path('login/', views.ConnectView.as_view(), name='connexion'),
@@ -14,6 +14,7 @@ urlpatterns = [
     path('logout/', views.DisconnectView.as_view(), name='logout'),
     #path("product/add/",views.ProductCreate, name="product-add"),
     path("product/add/",views.ProductCreateView.as_view(), name="product-add"),
+    path("product/<pk>/update/",views.ProductUpdateView.as_view(), name="product-update"),
 
 
 

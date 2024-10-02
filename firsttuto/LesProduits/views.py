@@ -1,3 +1,5 @@
+from itertools import product
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
@@ -107,6 +109,15 @@ def ProductCreate(request):
 class ProductCreateView(CreateView):
     model= Product
     template_name = 'new_product.html'
+    form_class = ProductForm
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('detail_produit', product.id)
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    template_name = 'update_product.html'
     form_class = ProductForm
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
