@@ -6,6 +6,7 @@ from django.contrib.auth.views import LoginView
 from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views.generic import *
 
 from firsttuto.LesProduits.forms import ProductForm
@@ -123,3 +124,11 @@ class ProductUpdateView(UpdateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         product = form.save()
         return redirect('detail_produit', product.id)
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'delete_product.html'
+    success_url = reverse_lazy('Tous les produits')
+
+
+

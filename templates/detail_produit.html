@@ -16,6 +16,9 @@
         <span id="price">{{product.status}}</span>
     </div>
     <a href="{%  url 'product-update' product.id %}">Modifier</a>
+    <a href="{%  url 'product-delete' product.id %}">Supprimer</a>
+    <br>
+    
     <a href="{% url 'Tous les produits' %}">Retour à la liste des produits</a>
 {% endblock %}
 
