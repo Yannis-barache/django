@@ -8,6 +8,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import *
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from firsttuto.LesProduits.forms import ProductForm, AttributeForm, ProductItemForm
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem
@@ -97,6 +99,7 @@ def ProductCreate(request):
         form = ProductForm()
     return render(request, "new_product.html", {'form': form})
 
+@method_decorator(login_required, name='dispatch')
 class ProductCreateView(CreateView):
     model= Product
     template_name = 'new_product.html'
@@ -106,6 +109,7 @@ class ProductCreateView(CreateView):
         product = form.save()
         return redirect('detail_produit', product.id)
 
+@method_decorator(login_required, name='dispatch')
 class ProductUpdateView(UpdateView):
     model = Product
     template_name = 'update_product.html'
@@ -115,6 +119,7 @@ class ProductUpdateView(UpdateView):
         product = form.save()
         return redirect('detail_produit', product.id)
 
+@method_decorator(login_required, name='dispatch')
 class ProductDeleteView(DeleteView):
     model = Product
     template_name = 'delete_product.html'
@@ -122,7 +127,7 @@ class ProductDeleteView(DeleteView):
 
 
 
-
+@method_decorator(login_required, name='dispatch')
 class ProductAttributeListView(ListView):
     model = ProductAttribute
     template_name = "product_attribute.html"
@@ -136,6 +141,7 @@ class ProductAttributeListView(ListView):
         context['titremenu'] = "Liste des attributs"
         return context
 
+@method_decorator(login_required, name='dispatch')
 class ProductAttributeDetailView(DetailView):
     model = ProductAttribute
     template_name = "detail_attribute.html"
@@ -147,6 +153,7 @@ class ProductAttributeDetailView(DetailView):
         context['values']= ProductAttributeValue.objects.filter(product_attribute=self.object).order_by('position')
         return context
 
+@method_decorator(login_required, name='dispatch')
 class ProductAttributeCreateView(CreateView):
     model = ProductAttribute
     template_name = 'new_attribute.html'
@@ -156,6 +163,7 @@ class ProductAttributeCreateView(CreateView):
         productattribute = form.save()
         return redirect('attribute-detail', productattribute.id)
 
+@method_decorator(login_required, name='dispatch')
 class ProductAttributeUpdateView(UpdateView):
     model = ProductAttribute
     template_name = 'update_attribute.html'
@@ -165,11 +173,13 @@ class ProductAttributeUpdateView(UpdateView):
         productattribute = form.save()
         return redirect('attribute-detail', productattribute.id)
 
+@method_decorator(login_required, name='dispatch')
 class ProductAttributeDeleteView(DeleteView):
     model = ProductAttribute
     template_name = 'delete_attribute.html'
     success_url = reverse_lazy('attribute-list')
 
+@method_decorator(login_required, name='dispatch')
 class ProductItemListView(ListView):
     model = ProductItem
     template_name = "list_items.html"
@@ -183,7 +193,7 @@ class ProductItemListView(ListView):
         context['titremenu'] = "Liste des déclinaisons"
         return context
 
-
+@method_decorator(login_required, name='dispatch')
 class ProductItemDetailView(DetailView):
     model = ProductItem
     template_name = "detail_item.html"
@@ -196,6 +206,7 @@ class ProductItemDetailView(DetailView):
         context['attributes'] = self.object.attributes.all()
         return context
 
+@method_decorator(login_required, name='dispatch')
 class ProductItemCreateView(CreateView):
     model = ProductItem
     template_name = 'new_item.html'
@@ -205,6 +216,7 @@ class ProductItemCreateView(CreateView):
         productitem = form.save()
         return redirect('item-detail', productitem.id)
 
+@method_decorator(login_required, name='dispatch')
 class ProductItemUpdateView(UpdateView):
     model = ProductItem
     template_name = 'update_item.html'
@@ -214,6 +226,7 @@ class ProductItemUpdateView(UpdateView):
         productitem = form.save()
         return redirect('item-detail', productitem.id)
 
+@method_decorator(login_required, name='dispatch')
 class ProductItemDeleteView(DeleteView):
     model = ProductItem
     template_name = 'delete_item.html'

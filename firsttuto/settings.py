@@ -28,6 +28,10 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# Définition de la route LOGIN_URL
+LOGIN_URL = '/lesProduits/login/'
+
+
 # Application definition
 
 INSTALLED_APPS = [
