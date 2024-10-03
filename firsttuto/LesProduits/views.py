@@ -132,3 +132,15 @@ class ProductDeleteView(DeleteView):
 
 
 
+
+class ProductAttributeListView(ListView):
+    model = ProductAttribute
+    template_name = "monapp/list_attributes.html"
+    context_object_name = "productattributes"
+    def get_queryset(self ):
+        return ProductAttribute.objects.all()
+    def get_context_data(self, **kwargs):
+        context = super(ProductAttributeListView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Liste des attributs"
+        return context
+
