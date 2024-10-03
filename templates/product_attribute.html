@@ -2,6 +2,13 @@
 
 {% block title %}Attributs des produits{% endblock %}
 {% block content %}
+    <!-- Barre de recherche -->
+    <p class="lead mb-3 ml-0">Rechercher un élément...</p>
+    <form method="GET" action="">
+    <input class="form-control" type="text" name="search" placeholder="Tapez ici votre recherche"
+    value="{{ request.GET.search }}">
+    <button type="submit" class="btn btn-success mt-2">Rechercher</button>
+    </form>
 <table class="table">
     <thead>
         <th>Nom</th>
@@ -37,4 +44,5 @@
     </tbody>
 </table>
     <button type="button" class="btn btn-primary" onclick="window.location.href='{% url 'attribute-create' %}'">Créer un nouvel attribut</button>
+    
 {% endblock %}

@@ -30,6 +30,20 @@ class ProductListView(ListView):
     template_name = "ListProducts.html"
     context_object_name = "prdcts"
 
+    def get_queryset(self):
+    # Surcouche pour filtrer les résultats en fonction de la recherche
+    # Récupérer le terme de recherche depuis la requête GET
+        query = self.request.GET.get('search')
+        if query:
+        # Filtre les produits par nom (insensible à la casse)
+            return Product.objects.filter(name__icontains=query)
+        # Si aucun terme de recherche, retourner tous les produits
+        return Product.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductListView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Liste des produits"
+        return context
 
 def About(request):
     return render(request, 'about.html')

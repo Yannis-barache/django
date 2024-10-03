@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <!-- Barre de recherche -->
+    <p class="lead mb-3 ml-0">Rechercher un élément...</p>
+    <form method="GET" action="">
+    <input class="form-control" type="text" name="search" placeholder="Tapez ici votre recherche"
+    value="{{ request.GET.search }}">
+    <button type="submit" class="btn btn-success mt-2">Rechercher</button>
+    </form>
+    
     <h1>Liste des produits</h1>
     <table class="table">
         <thead>
@@ -27,4 +35,5 @@
         </tbody>
     </table>
     <a href="{% url 'product-add' %}">Créer un nouveau produit</a>
+    
 {% endblock %}
