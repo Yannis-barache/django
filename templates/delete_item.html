@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Suppression d'un produit{% endblock %}
+{% block content %}
+    <h1> Suppression d'un produit </h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Êtes-vous sûr de vouloir supprimer le produit {{ item.product.name }} ?</p>
+        <button type="button" class="btn btn-danger mt-2" onclick="window.location.href='{% url 'item-list' %}'">Annuler</button>
+        <button type="submit" class="btn btn-success mt-2">Supprimer</button>
+    </form>
+{% endblock %}

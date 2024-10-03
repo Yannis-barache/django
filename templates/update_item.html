@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Mise à jour d'un produit{% endblock %}
+{% block content %}
+    <h1> Mise à jour d'un produit </h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="button" class="btn btn-danger mt-2" onclick="window.location.href='{% url 'item-list' %}'">Annuler</button>
+        <button type="submit" class="btn btn-success mt-2">Mettre à jour</button>
+    </form>
+{% endblock %}

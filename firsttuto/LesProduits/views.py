@@ -9,8 +9,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import *
 
-from firsttuto.LesProduits.forms import ProductForm, AttributeForm
-from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue
+from firsttuto.LesProduits.forms import ProductForm, AttributeForm, ProductItemForm
+from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem
 
 
 # Create your views here.
@@ -129,7 +129,7 @@ class ProductAttributeListView(ListView):
     context_object_name = "productattributes"
 
     def get_queryset(self ):
-        return ProductAttribute.objects.all()
+        return ProductAttribute.objects.all().prefetch_related('productattributevalue_set')
 
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeListView, self).get_context_data(**kwargs)
@@ -163,10 +163,60 @@ class ProductAttributeUpdateView(UpdateView):
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         productattribute = form.save()
-        return redirect('detail_attribute', productattribute.id)
+        return redirect('attribute-detail', productattribute.id)
 
 class ProductAttributeDeleteView(DeleteView):
     model = ProductAttribute
     template_name = 'delete_attribute.html'
     success_url = reverse_lazy('attribute-list')
+
+class ProductItemListView(ListView):
+    model = ProductItem
+    template_name = "list_items.html"
+    context_object_name = "productitems"
+
+    def get_queryset(self):
+        return ProductItem.objects.select_related('product').prefetch_related('attributes')
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductItemListView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Liste des déclinaisons"
+        return context
+
+
+class ProductItemDetailView(DetailView):
+    model = ProductItem
+    template_name = "detail_item.html"
+    context_object_name = "productitem"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductItemDetailView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Détail déclinaison"
+        # Récupérer les attributs associés à cette déclinaison
+        context['attributes'] = self.object.attributes.all()
+        return context
+
+class ProductItemCreateView(CreateView):
+    model = ProductItem
+    template_name = 'new_item.html'
+    form_class = ProductItemForm
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        productitem = form.save()
+        return redirect('item-detail', productitem.id)
+
+class ProductItemUpdateView(UpdateView):
+    model = ProductItem
+    template_name = 'update_item.html'
+    form_class = ProductItemForm
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        productitem = form.save()
+        return redirect('item-detail', productitem.id)
+
+class ProductItemDeleteView(DeleteView):
+    model = ProductItem
+    template_name = 'delete_item.html'
+    success_url = reverse_lazy('item-list')
+
 
