@@ -9,8 +9,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import *
 
-from firsttuto.LesProduits.forms import ProductForm
-from firsttuto.LesProduits.models import Product, ProductAttribute
+from firsttuto.LesProduits.forms import ProductForm, AttributeForm
+from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue
 
 
 # Create your views here.
@@ -47,16 +47,6 @@ class ProductDetailView(DetailView):
         context['titremenu'] = "Détail produit"
         return context
 
-
-class ProductAttributeView(ListView):
-    model = ProductAttribute
-    template_name = "product_attribute.html"
-    context_object_name = "product_attributes"
-
-    def get_context_data(self, **kwargs):
-        context = super(ProductAttributeView, self).get_context_data(**kwargs)
-        context['titremenu'] = "Détail produit"
-        return context
 
 
 class ConnectView(LoginView):
@@ -135,12 +125,48 @@ class ProductDeleteView(DeleteView):
 
 class ProductAttributeListView(ListView):
     model = ProductAttribute
-    template_name = "monapp/list_attributes.html"
+    template_name = "product_attribute.html"
     context_object_name = "productattributes"
+
     def get_queryset(self ):
         return ProductAttribute.objects.all()
+
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeListView, self).get_context_data(**kwargs)
         context['titremenu'] = "Liste des attributs"
         return context
+
+class ProductAttributeDetailView(DetailView):
+    model = ProductAttribute
+    template_name = "detail_attribute.html"
+    context_object_name = "productattribute"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductAttributeDetailView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Détail attribut"
+        context['values']= ProductAttributeValue.objects.filter(product_attribute=self.object).order_by('position')
+        return context
+
+class ProductAttributeCreateView(CreateView):
+    model = ProductAttribute
+    template_name = 'new_attribute.html'
+    form_class = AttributeForm
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        productattribute = form.save()
+        return redirect('attribute-detail', productattribute.id)
+
+class ProductAttributeUpdateView(UpdateView):
+    model = ProductAttribute
+    template_name = 'update_attribute.html'
+    form_class = AttributeForm
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        productattribute = form.save()
+        return redirect('detail_attribute', productattribute.id)
+
+class ProductAttributeDeleteView(DeleteView):
+    model = ProductAttribute
+    template_name = 'delete_attribute.html'
+    success_url = reverse_lazy('attribute-list')
 

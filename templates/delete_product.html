@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>Confirmer la suppression</h1>
+    {{ product }}
     <p>Êtes-vous sûr de vouloir supprimer le produit "{{ product.name }}" ?</p>
     <form method="post">
         {% csrf_token %}

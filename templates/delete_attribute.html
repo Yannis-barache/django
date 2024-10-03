@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Supprimer l'attribut{% endblock %}
+{% block content %}
+    <h1>Supprimer l'attribut</h1>
+    <p>Êtes-vous sûr de vouloir supprimer l'attribut "{{ productattribute.name }}" ?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'attribute-list' %}'">Retour</button>
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Modifier l'attribut{% endblock %}
+{% block content %}
+<h1>Modifier l'attribut</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'attribute-list' %}'">Retour</button>
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+</form>
+{% endblock %}

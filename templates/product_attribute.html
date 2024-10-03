@@ -1,12 +1,40 @@
-{% extends "base.html" %}
-{% block title %}
-    {{ titremenu }}
-{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Attributs des produits{% endblock %}
 {% block content %}
-    {% for attribute in product_attributes %}
-        {{ attribute }}
-        <div class="champ">
-            <label for="name">{{ attribute.name }}</label>
-        </div>
+<table class="table">
+    <thead>
+        <th>Nom</th>
+        <th>Valeurs</th>
+        <th>Position</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        <tr>
+            {% for attribute in productattributes %}
+            <td>{{ attribute.name}}</td>
+            <td>
+            {% for value in attribute.productattributevalue_set.all %}
+            <p>{{ value.value }}</p>
+            {% empty %}
+                <p>Aucune valeur</p>
+            {% endfor %}
+        </td>
+        <td>
+            {% for value in attribute.productattributevalue_set.all %}
+                <p>{{ value.position }}</p>
+            {% empty %}
+                <p>Aucune valeur</p>
+            {% endfor %}
+        </td>
+        <td>
+            <a href="{% url 'attribute-detail' attribute.id %}" class="btn btn-primary mt-2">Détails</a>
+            <a href="{% url 'attribute-update' attribute.id %}" class="btn btn-warning mt-2">Modifier</a>
+            <a href="{% url 'attribute-delete' attribute.id %}" class="btn btn-danger mt-2">Supprimer</a>
+        </td>
+    </tr>
     {% endfor %}
+    </tbody>
+</table>
+    <button type="button" class="btn btn-primary" onclick="window.location.href='{% url 'attribute-create' %}'">Créer un nouvel attribut</button>
 {% endblock %}
