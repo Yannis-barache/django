@@ -10,6 +10,7 @@ from django.urls import reverse_lazy
 from django.views.generic import *
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.db.models import Q
 
 from firsttuto.LesProduits.forms import ProductForm, AttributeForm, ProductItemForm
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem
@@ -147,7 +148,10 @@ class ProductAttributeListView(ListView):
     template_name = "product_attribute.html"
     context_object_name = "productattributes"
 
-    def get_queryset(self ):
+    def get_queryset(self):
+        query = self.request.GET.get('search')
+        if query:
+            return ProductAttribute.objects.filter(name__icontains=query).prefetch_related('productattributevalue_set')
         return ProductAttribute.objects.all().prefetch_related('productattributevalue_set')
 
     def get_context_data(self, **kwargs):
@@ -200,6 +204,10 @@ class ProductItemListView(ListView):
     context_object_name = "productitems"
 
     def get_queryset(self):
+        query = self.request.GET.get('search')
+        if query:
+            return ProductItem.objects.filter(product__name__icontains=query
+            ).select_related('product')
         return ProductItem.objects.select_related('product').prefetch_related('attributes')
 
     def get_context_data(self, **kwargs):
