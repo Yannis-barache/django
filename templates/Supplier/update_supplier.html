@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Modifier un fournisseur{% endblock %}
+{% block content %}
+    <h1>Modifier le fournisseur {{ supplier.name }}</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ formset.management_form }}
+        <h2>Les produits</h2>
+        {% for form in formset %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    {{ form.as_p }}
+                </div>
+            </div>
+        {% endfor %}
+        <a href="{% url 'supplier-list' %}" class="btn btn-primary mt-2">Retour à la liste des fournisseurs</a>
+        <button type="submit" class="btn btn-success mt-2">Modifier</button>
+    </form>
+{% endblock %}

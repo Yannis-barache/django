@@ -11,7 +11,7 @@ from django.views.generic import *
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from firsttuto.LesProduits.forms import ProductForm, AttributeForm, ProductItemForm
+from firsttuto.LesProduits.forms import ProductForm, AttributeForm, ProductItemForm, FournisseurForm, FournitFormSet
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur, \
     Fournit
 
@@ -249,7 +249,7 @@ class ProductItemDeleteView(DeleteView):
 
 class SupplierListView(ListView):
     model = Fournisseur
-    template_name = "Supplier/supplier_list.html"
+    template_name = "Supplier/list_supplier.html"
     context_object_name = "fournisseurs"
 
     def get_queryset(self):
@@ -264,7 +264,43 @@ def supplier_detail(request, pk):
     fournisseur = Fournisseur.objects.get(pk=pk)
     fournitures = Fournit.objects.filter(fournisseur=fournisseur)
 
-    return render(request, 'Supplier/supplier_detail.html', {
+    return render(request, 'Supplier/detail_supplier.html', {
         'supplier': fournisseur,
         'products': fournitures
     })
+
+class SupplierCreateView(CreateView):
+    model = Fournisseur
+    template_name = 'Supplier/new_supplier.html'
+    fields = '__all__'
+    success_url = reverse_lazy('supplier-list')
+
+class SupplierUpdateView(UpdateView):
+    model = Fournisseur
+    form_class = FournisseurForm
+    template_name = 'Supplier/update_supplier.html'
+    success_url = reverse_lazy('supplier-list')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['formset'] = FournitFormSet(self.request.POST, instance=self.object)
+        else:
+            data['formset'] = FournitFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            return redirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+class SupplierDeleteView(DeleteView):
+    model = Fournisseur
+    template_name = 'Supplier/delete_supplier.html'
+    success_url = reverse_lazy('supplier-list')
