@@ -26,6 +26,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'item-list' %}">Items</a>
                     </li>
+                    <li>
+                        <a class="nav-link" href="{% url 'supplier-list' %}">Fournisseurs</a>
+                    </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>

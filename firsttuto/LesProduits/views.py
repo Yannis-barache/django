@@ -12,7 +12,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 from firsttuto.LesProduits.forms import ProductForm, AttributeForm, ProductItemForm
-from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem
+from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur, \
+    Fournit
 
 
 # Create your views here.
@@ -246,4 +247,24 @@ class ProductItemDeleteView(DeleteView):
     template_name = 'delete_item.html'
     success_url = reverse_lazy('item-list')
 
+class SupplierListView(ListView):
+    model = Fournisseur
+    template_name = "Supplier/supplier_list.html"
+    context_object_name = "fournisseurs"
 
+    def get_queryset(self):
+        return Fournisseur.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(SupplierListView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Liste des fournisseurs"
+        return context
+
+def supplier_detail(request, pk):
+    fournisseur = Fournisseur.objects.get(pk=pk)
+    fournitures = Fournit.objects.filter(fournisseur=fournisseur)
+
+    return render(request, 'Supplier/supplier_detail.html', {
+        'supplier': fournisseur,
+        'products': fournitures
+    })
