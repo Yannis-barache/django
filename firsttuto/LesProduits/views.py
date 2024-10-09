@@ -6,7 +6,7 @@ from django.contrib.auth.views import LoginView
 from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import *
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -272,13 +272,7 @@ def supplier_detail(request, pk):
 class SupplierCreateView(CreateView):
     model = Fournisseur
     template_name = 'Supplier/new_supplier.html'
-    fields = '__all__'
-    success_url = reverse_lazy('supplier-list')
-
-class SupplierUpdateView(UpdateView):
-    model = Fournisseur
     form_class = FournisseurForm
-    template_name = 'Supplier/update_supplier.html'
     success_url = reverse_lazy('supplier-list')
 
     def get_context_data(self, **kwargs):
@@ -300,6 +294,33 @@ class SupplierUpdateView(UpdateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
+class SupplierUpdateView(UpdateView):
+    model = Fournisseur
+    form_class = FournisseurForm
+    template_name = 'Supplier/update_supplier.html'
+    success_url = reverse_lazy('supplier-list')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['formset'] = FournitFormSet(self.request.POST, instance=self.object)
+        else:
+            data['formset'] = FournitFormSet(instance=self.object)
+        data['supplier'] = self.object  # Ensure supplier is added to context
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            if "save_and_add_another" in self.request.POST:
+                return redirect('supplier-update', pk=self.object.pk)
+            return redirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
 class SupplierDeleteView(DeleteView):
     model = Fournisseur
     template_name = 'Supplier/delete_supplier.html'
