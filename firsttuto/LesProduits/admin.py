@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur
+from .models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur, Fournit
+
+class FournitInline(admin.TabularInline):
+    model = Fournit
+    extra = 1  # Number of empty forms to display
 
 
 class ProductItemAdmin(admin.TabularInline):
@@ -34,23 +38,19 @@ def set_product_offline(modeladmin, request, queryset):
 class ProductAdmin(admin.ModelAdmin):
     model = Productlist_display = ('name', 'code')
     inlines = [ProductItemAdmin, ]
-    list_display = ["id", "name", "code","tax"]
+    list_display = ["id", "name", "code"]
     list_editable = ["name"]
     radio_fields = {"status": admin.VERTICAL}
     actions = [set_product_online, set_product_offline]
     list_filter = (ProductFilter,)
-    def tax(self, instance):
-        return (instance.price_ttc / instance.price_ht) - 1
-
-    tax.short_description = "Taxes (%)"
-    tax.admin_order_field = "price_ht"
 
 
-
+class FournisseurAdmin(admin.ModelAdmin):
+    inlines = [FournitInline, ]
 
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductItem)
 admin.site.register(ProductAttribute)
 admin.site.register(ProductAttributeValue)
-admin.site.register(Fournisseur)
+admin.site.register(Fournisseur, FournisseurAdmin)
