@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, ProductAttribute, ProductAttributeValue, ProductItem
+from .models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur
 
 
 class ProductItemAdmin(admin.TabularInline):
@@ -34,8 +34,8 @@ def set_product_offline(modeladmin, request, queryset):
 class ProductAdmin(admin.ModelAdmin):
     model = Productlist_display = ('name', 'code')
     inlines = [ProductItemAdmin, ]
-    list_display = ["id", "name", "price_ht", "price_ttc", "code","tax"]
-    list_editable = ["name", "price_ht", "price_ttc"]
+    list_display = ["id", "name", "code","tax"]
+    list_editable = ["name"]
     radio_fields = {"status": admin.VERTICAL}
     actions = [set_product_online, set_product_offline]
     list_filter = (ProductFilter,)
@@ -53,3 +53,4 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductItem)
 admin.site.register(ProductAttribute)
 admin.site.register(ProductAttributeValue)
+admin.site.register(Fournisseur)
