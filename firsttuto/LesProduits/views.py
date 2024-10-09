@@ -254,4 +254,16 @@ class ProductItemDeleteView(DeleteView):
     template_name = 'delete_item.html'
     success_url = reverse_lazy('item-list')
 
+def search_view(request):
+    query = request.GET.get('search')
+    products = Product.objects.filter(Q(name__icontains=query))
+    attributes = ProductAttribute.objects.filter(name__icontains=query)
+    items = ProductItem.objects.filter(Q(code__icontains=query) | Q(product__name__icontains=query))
 
+    context = {
+        'query': query,
+        'products': products,
+        'attributes': attributes,
+        'items': items,
+    }
+    return render(request, 'search_results.html', context)
