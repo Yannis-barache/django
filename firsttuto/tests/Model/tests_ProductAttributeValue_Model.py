@@ -29,7 +29,7 @@ class ProductAttributeValueModelTest(TestCase):
         """
         Tester la méthode __str__ du modèle ProductAttributeValue
         """
-        self.assertEqual(str(self.value), "Vert [Couleur]")
+        self.assertEqual(str(self.value), "Couleur - Vert")
 
     def test_update_product_attribute_value(self):
         """

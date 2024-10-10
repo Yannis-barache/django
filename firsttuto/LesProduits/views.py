@@ -97,7 +97,7 @@ class ConnectView(LoginView):
             login(request, user)
             print("User is valid, active and authenticated ", user)
             return render(
-                request, 'hello.html',
+                request, 'after-login.html',
                 {'titreh1': "hello " + username + ", you're connected"})
         else:
             return render(request, 'connexion.html',
