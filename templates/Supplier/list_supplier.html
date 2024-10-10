@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Liste des fournisseurs{% endblock %}
+{% block content %}
+    <h1>Liste des fournisseurs</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supplier in fournisseurs %}
+                <tr>
+                    <td>{{ supplier.name }}</td>
+                    <td>
+                        <a href="{% url 'supplier-detail' supplier.id %}" class="btn btn-primary">Détail</a>
+                        <a href="{% url 'supplier-update' supplier.id %}" class="btn btn-warning">Modifier</a>
+                        <a href="{% url 'supplier-delete' supplier.id %}" class="btn btn-danger">Supprimer</a>
+                    </td>
+                </tr>
+                
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'supplier-create' %}" class="btn btn-success">Créer un fournisseur</a>
+{% endblock %}
+

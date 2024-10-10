@@ -13,34 +13,38 @@
 
 <body>
     {% block nav %}
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'Tous les produits' %}">Produits</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'About' %}">À propos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'attribute-list' %}">Déclinaisons</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'item-list' %}">Items</a>
-                </li>
-                {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
-                </li>
-                {%else%}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'connexion' %}">Connexion</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register' %}">Inscription</a>
-                </li>
-                {%endif%}
-            </ul>
+
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Tous les produits' %}">Produits</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'About' %}">À propos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'attribute-list' %}">Déclinaisons</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'item-list' %}">Items</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{% url 'supplier-list' %}">Fournisseurs</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
+                        </li>
+                    {%else%}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'connexion' %}">Connexion</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">Inscription</a>
+                        </li>
+                    {%endif%}
+               
             <!-- Barre de recherche -->
             <form class="form-inline ml-auto" method="GET" action="{% url 'search' %}">
                 <div class="input-group">

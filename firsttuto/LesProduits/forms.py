@@ -1,5 +1,7 @@
 from django import forms
-from firsttuto.LesProduits.models import Product, ProductAttribute, ProductItem
+from firsttuto.LesProduits.models import Product, ProductAttribute, ProductItem, Fournisseur, Fournit
+from django.forms import inlineformset_factory
+
 
 class ContactUsForm(forms.Form):
     name = forms.CharField(required=False)
@@ -21,3 +23,15 @@ class ProductItemForm(forms.ModelForm):
         model = ProductItem
         fields = '__all__'
 
+
+class FournitForm(forms.ModelForm):
+    class Meta:
+        model = Fournit
+        fields = ['product', 'price_ht', 'price_ttc']
+
+class FournisseurForm(forms.ModelForm):
+    class Meta:
+        model = Fournisseur
+        fields = ['name']
+
+FournitFormSet = inlineformset_factory(Fournisseur, Fournit, form=FournitForm, extra=1)

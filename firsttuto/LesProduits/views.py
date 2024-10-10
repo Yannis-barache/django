@@ -6,16 +6,17 @@ from django.contrib.auth.views import LoginView
 from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import *
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 from django.db.models import Q
 from django.core.mail import send_mail
-from firsttuto.LesProduits.forms import ProductForm, AttributeForm, ProductItemForm, ContactUsForm
-from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem
 
+from firsttuto.LesProduits.forms import ProductForm, AttributeForm, ProductItemForm, FournisseurForm, FournitFormSet
+from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur, \
+    Fournit
 
 # Create your views here.
 
@@ -272,6 +273,87 @@ class ProductItemDeleteView(DeleteView):
     template_name = 'delete_item.html'
     success_url = reverse_lazy('item-list')
 
+
+class SupplierListView(ListView):
+    model = Fournisseur
+    template_name = "Supplier/list_supplier.html"
+    context_object_name = "fournisseurs"
+
+    def get_queryset(self):
+        return Fournisseur.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(SupplierListView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Liste des fournisseurs"
+        return context
+
+def supplier_detail(request, pk):
+    fournisseur = Fournisseur.objects.get(pk=pk)
+    fournitures = Fournit.objects.filter(fournisseur=fournisseur)
+
+    return render(request, 'Supplier/detail_supplier.html', {
+        'supplier': fournisseur,
+        'products': fournitures
+    })
+
+class SupplierCreateView(CreateView):
+    model = Fournisseur
+    template_name = 'Supplier/new_supplier.html'
+    form_class = FournisseurForm
+    success_url = reverse_lazy('supplier-list')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['formset'] = FournitFormSet(self.request.POST, instance=self.object)
+        else:
+            data['formset'] = FournitFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            return redirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+class SupplierUpdateView(UpdateView):
+    model = Fournisseur
+    form_class = FournisseurForm
+    template_name = 'Supplier/update_supplier.html'
+    success_url = reverse_lazy('supplier-list')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['formset'] = FournitFormSet(self.request.POST, instance=self.object)
+        else:
+            data['formset'] = FournitFormSet(instance=self.object)
+        data['supplier'] = self.object  # Ensure supplier is added to context
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            if "save_and_add_another" in self.request.POST:
+                return redirect('supplier-update', pk=self.object.pk)
+            return redirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+class SupplierDeleteView(DeleteView):
+    model = Fournisseur
+    template_name = 'Supplier/delete_supplier.html'
+    success_url = reverse_lazy('supplier-list')
+
+    
 def search_view(request):
     query = request.GET.get('search')
     products = Product.objects.filter(Q(name__icontains=query))

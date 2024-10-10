@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Model
 from django.utils import timezone
 
 PRODUCT_STATUS = (
@@ -32,10 +33,6 @@ class Product(models.Model):
 
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=10, null=True, blank=True, unique=True)
-    price_ht = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True,
-                                   verbose_name="Prix unitaire HT")
-    price_ttc = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True,
-                                    verbose_name="Prix unitaire TTC")
     status = models.SmallIntegerField(choices=PRODUCT_STATUS, default=0)
     date_creation = models.DateTimeField(blank=True, verbose_name="Date création")
 
@@ -90,3 +87,22 @@ class ProductAttributeValue(models.Model):
 
     def __str__(self):
         return "{0} [{1}]".format(self.value, self.product_attribute)
+
+class Fournisseur(models.Model):
+    """
+    Représente les fournisseurs de produit
+    """
+    name = models.CharField(max_length=100)
+    products = models.ManyToManyField("Product", through="Fournit", related_name="fournisseurs")
+
+    def __str__(self):
+        return self.name
+
+class Fournit(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    fournisseur = models.ForeignKey('Fournisseur', on_delete=models.CASCADE)
+    price_ht = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Prix unitaire HT")
+    price_ttc = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Prix unitaire TTC")
+
+    def __str__(self):
+        return f"{self.fournisseur.name} fournit {self.product.name} à {self.price_ht} HT et {self.price_ttc} TTC"
