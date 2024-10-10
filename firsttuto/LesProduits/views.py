@@ -14,19 +14,11 @@ from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.core.mail import send_mail
 
-from firsttuto.LesProduits.forms import ProductForm, AttributeForm, ProductItemForm, FournisseurForm, FournitFormSet
+from firsttuto.LesProduits.forms import ContactUsForm, ProductForm, AttributeForm, ProductItemForm, FournisseurForm, FournitFormSet
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur, \
     Fournit
 
 # Create your views here.
-
-def index(request):
-    return render(request, 'index.html')
-
-
-def evan(request, name):
-    return render(request, 'evan.html', {'name': name})
-
 
 class ProductListView(ListView):
     model = Product
@@ -121,7 +113,7 @@ class DisconnectView(TemplateView):
     def get(self, request, **kwargs):
         print("User is disconnected")
         logout(request)
-        return render(request, 'index.html')
+        return render(request, 'disconnected.html')
 
 def ProductCreate(request):
     if request.method == 'POST':
@@ -187,7 +179,8 @@ class ProductAttributeDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail attribut"
-        context['values']= ProductAttributeValue.objects.filter(product_attribute=self.object).order_by('position')
+        context['values']= ProductAttributeValue.objects.filter(
+            product_attribute=self.object).order_by('position')
         return context
 
 @method_decorator(login_required, name='dispatch')
