@@ -93,16 +93,15 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProductDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail produit"
+        context['fournisseurs'] = Fournit.objects.filter(product=self.get_object())
         return context
-    
-    @method_decorator(user_passes_test(is_admin, login_url='non-autorise'), name='dispatch')
+
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
         product = self.get_object()
         user = request.user
-        fournisseur = Fournit.objects.filter(product=product).first().fournisseur  # Assurez-vous que le produit a un fournisseur associé
-        if not fournisseur:
-            return HttpResponse("Aucun fournisseur associé à ce produit.", status=400)
+        fournisseur_id = request.POST.get('fournisseur')
+        fournisseur = get_object_or_404(Fournisseur, id=fournisseur_id)
 
         # Récupérer la quantité du formulaire
         quantity = int(request.POST.get('quantity', 1))

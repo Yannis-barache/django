@@ -45,7 +45,6 @@ class Product(models.Model):
     status = models.SmallIntegerField(choices=PRODUCT_STATUS, default=0)
     date_creation = models.DateTimeField(blank=True,
                                          verbose_name="Date création")
-    stock = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.name} - {self.code}"
@@ -141,6 +140,7 @@ class Fournit(models.Model):
     price_ttc = models.DecimalField(max_digits=8,
                                     decimal_places=2,
                                     verbose_name="Prix unitaire TTC")
+    stock = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.fournisseur.name} fournit {self.product.name} à {self.price_ht} HT et {self.price_ttc} TTC"
@@ -179,8 +179,9 @@ class Commande(models.Model):
 
     def save(self, *args, **kwargs):
         if self.status == 2:  # Commande reçue
-            self.product.stock += self.quantity
-            self.product.save()
+            fournit = Fournit.objects.get(product=self.product, fournisseur=self.fournisseur)
+            fournit.stock += self.quantity
+            fournit.save()
         super().save(*args, **kwargs)
 
     def advance_status(self):

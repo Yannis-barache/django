@@ -19,7 +19,6 @@ class ProductFormTest(TestCase):
             code="1234",
             status=0,
             date_creation=timezone.now(),
-            stock=10
         )
 
     def test_form_valid_data(self):
@@ -31,7 +30,6 @@ class ProductFormTest(TestCase):
             'code': '1235',
             'status': 0,
             'date_creation': timezone.now(),
-            'stock': 10
         })
         self.assertTrue(form.is_valid())  # Le formulaire doit être valide
 
@@ -44,7 +42,6 @@ class ProductFormTest(TestCase):
             'code': '',
             'status': 0,
             'date_creation': timezone.now(),
-            'stock': 10
         })
         self.assertFalse(form.is_valid())  # Le formulaire ne doit pas être valide
 
@@ -56,7 +53,6 @@ class ProductFormTest(TestCase):
             'name': 'iphone',
             'status': 0,
             'date_creation': timezone.now(),
-            'stock': 10
         })
         self.assertTrue(form.is_valid())
 
@@ -68,7 +64,6 @@ class ProductFormTest(TestCase):
             'name': 'iphone',
             'code': '1235',
             'status': 0,
-            'stock': 10,
             'date_creation': '2021-09-01 00:00:00'
         })
         self.assertTrue(form.is_valid())
