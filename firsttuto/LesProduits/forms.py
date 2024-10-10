@@ -1,6 +1,10 @@
 from django import forms
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductItem
 
+class ContactUsForm(forms.Form):
+    name = forms.CharField(required=False)
+    email = forms.EmailField()
+    message = forms.CharField(max_length=1000)
 
 class ProductForm(forms.ModelForm):
     class Meta:
