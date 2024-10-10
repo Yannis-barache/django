@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Résultats de la recherche{% endblock %}
+{% block content %}
+    <h1>Résultats de la recherche pour "{{ query }}"</h1>
+
+    <h2>Produits</h2>
+    {% if products %}
+        <div class="row">
+            {% for product in products %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.code }}</p>
+                            <p class="card-text">{{ product.description }}</p>
+                            <a href="{% url 'detail_produit' product.id %}">
+                                <button>Détails</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Aucun produit trouvé.</p>
+    {% endif %}
+
+    <h2>Attributs</h2>
+    {% if attributes %}
+        <div class="row">
+            {% for attribute in attributes %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ attribute.name }}</h5>
+                            <a href="{% url 'attribute-detail' attribute.id %}">
+                                <button>Détails</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Aucun attribut trouvé.</p>
+    {% endif %}
+
+    <h2>Items</h2>
+    {% if items %}
+        <div class="row">
+            {% for item in items %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.code }}</h5>
+                            <p class="card-text">{{ item.product.name }}</p>
+                            <a href="{% url 'item-detail' item.id %}">
+                                <button>Détails</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Aucun item trouvé.</p>
+    {% endif %}
+{% endblock %}

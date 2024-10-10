@@ -10,8 +10,9 @@ from django.urls import reverse_lazy
 from django.views.generic import *
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.core.mail import send_mail
 
+from django.db.models import Q
+from django.core.mail import send_mail
 from firsttuto.LesProduits.forms import ProductForm, AttributeForm, ProductItemForm, ContactUsForm
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem
 
@@ -165,7 +166,10 @@ class ProductAttributeListView(ListView):
     template_name = "product_attribute.html"
     context_object_name = "productattributes"
 
-    def get_queryset(self ):
+    def get_queryset(self):
+        query = self.request.GET.get('search')
+        if query:
+            return ProductAttribute.objects.filter(name__icontains=query).prefetch_related('productattributevalue_set')
         return ProductAttribute.objects.all().prefetch_related('productattributevalue_set')
 
     def get_context_data(self, **kwargs):
@@ -218,6 +222,10 @@ class ProductItemListView(ListView):
     context_object_name = "productitems"
 
     def get_queryset(self):
+        query = self.request.GET.get('search')
+        if query:
+            return ProductItem.objects.filter(product__name__icontains=query
+            ).select_related('product')
         return ProductItem.objects.select_related('product').prefetch_related('attributes')
 
     def get_context_data(self, **kwargs):
@@ -264,4 +272,16 @@ class ProductItemDeleteView(DeleteView):
     template_name = 'delete_item.html'
     success_url = reverse_lazy('item-list')
 
+def search_view(request):
+    query = request.GET.get('search')
+    products = Product.objects.filter(Q(name__icontains=query))
+    attributes = ProductAttribute.objects.filter(name__icontains=query)
+    items = ProductItem.objects.filter(Q(code__icontains=query) | Q(product__name__icontains=query))
 
+    context = {
+        'query': query,
+        'products': products,
+        'attributes': attributes,
+        'items': items,
+    }
+    return render(request, 'search_results.html', context)
