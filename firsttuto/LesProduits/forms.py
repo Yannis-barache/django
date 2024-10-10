@@ -3,6 +3,10 @@ from firsttuto.LesProduits.models import Product, ProductAttribute, ProductItem,
 from django.forms import inlineformset_factory
 
 
+class ContactUsForm(forms.Form):
+    name = forms.CharField(required=False)
+    email = forms.EmailField()
+    message = forms.CharField(max_length=1000)
 
 class ProductForm(forms.ModelForm):
     class Meta:

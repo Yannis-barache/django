@@ -10,11 +10,12 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import *
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.core.mail import send_mail
+
 
 from firsttuto.LesProduits.forms import ProductForm, AttributeForm, ProductItemForm, FournisseurForm, FournitFormSet
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur, \
     Fournit
-
 
 # Create your views here.
 
@@ -50,8 +51,25 @@ def About(request):
     return render(request, 'about.html')
 
 
-def Contact(request):
-    return render(request, 'Contact.html')
+def ContactView(request):
+    titreh1 = "Contact us !"
+    if request.method=='POST':
+        form = ContactUsForm(request.POST)
+        if form.is_valid():
+            send_mail(
+            subject=f'Message from {form.cleaned_data["name"] or "anonyme"} via MonProjet Contact Us form',
+            message=form.cleaned_data['message'],
+            from_email=form.cleaned_data['email'],
+            recipient_list=['admin@monprojet.com'],
+            )
+            return redirect('email-sent')
+    else:
+        form = ContactUsForm()
+
+    return render(request, "Contact.html",{'titreh1':titreh1, 'form':form})
+
+def EmailSent(request):
+    return render(request, 'email-sent.html')
 
 
 class ProductDetailView(DetailView):
