@@ -1,13 +1,15 @@
-from itertools import product
-
+"""
+Les vues de l'application LesProduits
+"""
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, reverse
-from django.views.generic import *
+from django.urls import reverse_lazy
+from django.views.generic import (ListView, DetailView, TemplateView,
+                                  CreateView, UpdateView, DeleteView)
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
@@ -18,19 +20,21 @@ from firsttuto.LesProduits.forms import ContactUsForm, ProductForm, AttributeFor
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur, \
     Fournit
 
-# Create your views here.
 
 class ProductListView(ListView):
+    """
+    Vue pour afficher la liste des produits
+    """
     model = Product
     template_name = "ListProducts.html"
     context_object_name = "prdcts"
 
     def get_queryset(self):
-    # Surcouche pour filtrer les résultats en fonction de la recherche
-    # Récupérer le terme de recherche depuis la requête GET
+        # Surcouche pour filtrer les résultats en fonction de la recherche
+        # Récupérer le terme de recherche depuis la requête GET
         query = self.request.GET.get('search')
         if query:
-        # Filtre les produits par nom (insensible à la casse)
+            # Filtre les produits par nom (insensible à la casse)
             return Product.objects.filter(name__icontains=query)
         # Si aucun terme de recherche, retourner tous les produits
         return Product.objects.all()
@@ -40,26 +44,29 @@ class ProductListView(ListView):
         context['titremenu'] = "Liste des produits"
         return context
 
+
 def About(request):
     return render(request, 'about.html')
 
 
 def ContactView(request):
     titreh1 = "Contact us !"
-    if request.method=='POST':
+    if request.method == 'POST':
         form = ContactUsForm(request.POST)
         if form.is_valid():
             send_mail(
-            subject=f'Message from {form.cleaned_data["name"] or "anonyme"} via MonProjet Contact Us form',
-            message=form.cleaned_data['message'],
-            from_email=form.cleaned_data['email'],
-            recipient_list=['admin@monprojet.com'],
+                subject=
+                f'Message from {form.cleaned_data["name"] or "anonyme"} via MonProjet Contact Us form',
+                message=form.cleaned_data['message'],
+                from_email=form.cleaned_data['email'],
+                recipient_list=['admin@monprojet.com'],
             )
             return redirect('email-sent')
     else:
         form = ContactUsForm()
 
-    return render(request, "Contact.html",{'titreh1':titreh1, 'form':form})
+    return render(request, "Contact.html", {'titreh1': titreh1, 'form': form})
+
 
 def EmailSent(request):
     return render(request, 'email-sent.html')
@@ -76,8 +83,10 @@ class ProductDetailView(DetailView):
         return context
 
 
-
 class ConnectView(LoginView):
+    """
+    Vue pour la connexion de l'utilisateur
+    """
     template_name = 'connexion.html'
 
     def post(self, request, **kwargs):
@@ -87,12 +96,18 @@ class ConnectView(LoginView):
         if user is not None and user.is_active:
             login(request, user)
             print("User is valid, active and authenticated ", user)
-            return render(request, 'hello.html', {'titreh1': "hello " + username + ", you're connected"})
+            return render(
+                request, 'hello.html',
+                {'titreh1': "hello " + username + ", you're connected"})
         else:
-            return render(request, 'connexion.html', {'error': 'Invalid login or password'})
+            return render(request, 'connexion.html',
+                          {'error': 'Invalid login or password'})
 
 
 class RegisterView(TemplateView):
+    """
+    Vue pour l'inscription de l'utilisateur
+    """
     template_name = 'register.html'
 
     def post(self, request, **kwargs):
@@ -104,7 +119,8 @@ class RegisterView(TemplateView):
         if user is not None and user.is_active:
             return render(request, 'connexion.html')
         else:
-            return render(request, 'register.html', {'error': 'Invalid login or password'})
+            return render(request, 'register.html',
+                          {'error': 'Invalid login or password'})
 
 
 class DisconnectView(TemplateView):
@@ -114,6 +130,7 @@ class DisconnectView(TemplateView):
         print("User is disconnected")
         logout(request)
         return render(request, 'disconnected.html')
+
 
 def ProductCreate(request):
     if request.method == 'POST':
@@ -125,15 +142,17 @@ def ProductCreate(request):
         form = ProductForm()
     return render(request, "new_product.html", {'form': form})
 
+
 @method_decorator(login_required, name='dispatch')
 class ProductCreateView(CreateView):
-    model= Product
+    model = Product
     template_name = 'new_product.html'
     form_class = ProductForm
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         product = form.save()
         return redirect('detail_produit', product.id)
+
 
 @method_decorator(login_required, name='dispatch')
 class ProductUpdateView(UpdateView):
@@ -145,16 +164,22 @@ class ProductUpdateView(UpdateView):
         product = form.save()
         return redirect('detail_produit', product.id)
 
+
 @method_decorator(login_required, name='dispatch')
 class ProductDeleteView(DeleteView):
+    """
+    Vue pour supprimer un produit
+    """
     model = Product
     template_name = 'delete_product.html'
     success_url = reverse_lazy('Tous les produits')
 
 
-
 @method_decorator(login_required, name='dispatch')
 class ProductAttributeListView(ListView):
+    """
+    Vue pour afficher la liste des attributs
+    """
     model = ProductAttribute
     template_name = "product_attribute.html"
     context_object_name = "productattributes"
@@ -162,13 +187,18 @@ class ProductAttributeListView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('search')
         if query:
-            return ProductAttribute.objects.filter(name__icontains=query).prefetch_related('productattributevalue_set')
-        return ProductAttribute.objects.all().prefetch_related('productattributevalue_set')
+            return ProductAttribute.objects.filter(
+                name__icontains=query).prefetch_related(
+                    'productattributevalue_set')
+        return ProductAttribute.objects.all().prefetch_related(
+            'productattributevalue_set')
 
     def get_context_data(self, **kwargs):
-        context = super(ProductAttributeListView, self).get_context_data(**kwargs)
+        context = super(ProductAttributeListView,
+                        self).get_context_data(**kwargs)
         context['titremenu'] = "Liste des attributs"
         return context
+
 
 @method_decorator(login_required, name='dispatch')
 class ProductAttributeDetailView(DetailView):
@@ -177,11 +207,13 @@ class ProductAttributeDetailView(DetailView):
     context_object_name = "productattribute"
 
     def get_context_data(self, **kwargs):
-        context = super(ProductAttributeDetailView, self).get_context_data(**kwargs)
+        context = super(ProductAttributeDetailView,
+                        self).get_context_data(**kwargs)
         context['titremenu'] = "Détail attribut"
-        context['values']= ProductAttributeValue.objects.filter(
+        context['values'] = ProductAttributeValue.objects.filter(
             product_attribute=self.object).order_by('position')
         return context
+
 
 @method_decorator(login_required, name='dispatch')
 class ProductAttributeCreateView(CreateView):
@@ -193,8 +225,12 @@ class ProductAttributeCreateView(CreateView):
         productattribute = form.save()
         return redirect('attribute-detail', productattribute.id)
 
+
 @method_decorator(login_required, name='dispatch')
 class ProductAttributeUpdateView(UpdateView):
+    """
+    Vue pour mettre à jour un attribut
+    """
     model = ProductAttribute
     template_name = 'update_attribute.html'
     form_class = AttributeForm
@@ -203,14 +239,22 @@ class ProductAttributeUpdateView(UpdateView):
         productattribute = form.save()
         return redirect('attribute-detail', productattribute.id)
 
+
 @method_decorator(login_required, name='dispatch')
 class ProductAttributeDeleteView(DeleteView):
+    """
+    Vue pour supprimer un attribut
+    """
     model = ProductAttribute
     template_name = 'delete_attribute.html'
     success_url = reverse_lazy('attribute-list')
 
+
 @method_decorator(login_required, name='dispatch')
 class ProductItemListView(ListView):
+    """
+    Vue pour afficher la liste des déclinaisons
+    """
     model = ProductItem
     template_name = "list_items.html"
     context_object_name = "productitems"
@@ -218,14 +262,16 @@ class ProductItemListView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('search')
         if query:
-            return ProductItem.objects.filter(product__name__icontains=query
-            ).select_related('product')
-        return ProductItem.objects.select_related('product').prefetch_related('attributes')
+            return ProductItem.objects.filter(
+                product__name__icontains=query).select_related('product')
+        return ProductItem.objects.select_related('product').prefetch_related(
+            'attributes')
 
     def get_context_data(self, **kwargs):
         context = super(ProductItemListView, self).get_context_data(**kwargs)
         context['titremenu'] = "Liste des déclinaisons"
         return context
+
 
 @method_decorator(login_required, name='dispatch')
 class ProductItemDetailView(DetailView):
@@ -240,8 +286,12 @@ class ProductItemDetailView(DetailView):
         context['attributes'] = self.object.attributes.all()
         return context
 
+
 @method_decorator(login_required, name='dispatch')
 class ProductItemCreateView(CreateView):
+    """
+    Vue pour créer une nouvelle déclinaison
+    """
     model = ProductItem
     template_name = 'new_item.html'
     form_class = ProductItemForm
@@ -249,6 +299,7 @@ class ProductItemCreateView(CreateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         productitem = form.save()
         return redirect('item-detail', productitem.id)
+
 
 @method_decorator(login_required, name='dispatch')
 class ProductItemUpdateView(UpdateView):
@@ -260,14 +311,21 @@ class ProductItemUpdateView(UpdateView):
         productitem = form.save()
         return redirect('item-detail', productitem.id)
 
+
 @method_decorator(login_required, name='dispatch')
 class ProductItemDeleteView(DeleteView):
+    """
+    Vue pour supprimer une déclinaison
+    """
     model = ProductItem
     template_name = 'delete_item.html'
     success_url = reverse_lazy('item-list')
 
 
 class SupplierListView(ListView):
+    """
+    Vue pour afficher la liste des fournisseurs
+    """
     model = Fournisseur
     template_name = "Supplier/list_supplier.html"
     context_object_name = "fournisseurs"
@@ -280,7 +338,16 @@ class SupplierListView(ListView):
         context['titremenu'] = "Liste des fournisseurs"
         return context
 
-def supplier_detail(request, pk):
+
+def SupplierDetail(request, pk):
+    """
+    Vue pour afficher les détails d'un fournisseur
+
+    Arguments:
+        - `request`: La requête HTTP
+        - `pk`: La clé primaire du fournisseur
+
+    """
     fournisseur = Fournisseur.objects.get(pk=pk)
     fournitures = Fournit.objects.filter(fournisseur=fournisseur)
 
@@ -289,7 +356,11 @@ def supplier_detail(request, pk):
         'products': fournitures
     })
 
+
 class SupplierCreateView(CreateView):
+    """
+    Vue pour créer un nouveau fournisseur
+    """
     model = Fournisseur
     template_name = 'Supplier/new_supplier.html'
     form_class = FournisseurForm
@@ -298,7 +369,8 @@ class SupplierCreateView(CreateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
-            data['formset'] = FournitFormSet(self.request.POST, instance=self.object)
+            data['formset'] = FournitFormSet(self.request.POST,
+                                             instance=self.object)
         else:
             data['formset'] = FournitFormSet(instance=self.object)
         return data
@@ -314,7 +386,11 @@ class SupplierCreateView(CreateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
+
 class SupplierUpdateView(UpdateView):
+    """
+    Vue pour mettre à jour un fournisseur
+    """
     model = Fournisseur
     form_class = FournisseurForm
     template_name = 'Supplier/update_supplier.html'
@@ -323,7 +399,8 @@ class SupplierUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
-            data['formset'] = FournitFormSet(self.request.POST, instance=self.object)
+            data['formset'] = FournitFormSet(self.request.POST,
+                                             instance=self.object)
         else:
             data['formset'] = FournitFormSet(instance=self.object)
         data['supplier'] = self.object  # Ensure supplier is added to context
@@ -341,17 +418,20 @@ class SupplierUpdateView(UpdateView):
             return redirect(self.get_success_url())
         else:
             return self.render_to_response(self.get_context_data(form=form))
+
+
 class SupplierDeleteView(DeleteView):
     model = Fournisseur
     template_name = 'Supplier/delete_supplier.html'
     success_url = reverse_lazy('supplier-list')
 
-    
-def search_view(request):
+
+def SearchView(request):
     query = request.GET.get('search')
     products = Product.objects.filter(Q(name__icontains=query))
     attributes = ProductAttribute.objects.filter(name__icontains=query)
-    items = ProductItem.objects.filter(Q(code__icontains=query) | Q(product__name__icontains=query))
+    items = ProductItem.objects.filter(
+        Q(code__icontains=query) | Q(product__name__icontains=query))
 
     context = {
         'query': query,
