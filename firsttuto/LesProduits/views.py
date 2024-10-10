@@ -26,7 +26,7 @@ class ProductListView(ListView):
     Vue pour afficher la liste des produits
     """
     model = Product
-    template_name = "ListProducts.html"
+    template_name = "Product/product_list.html"
     context_object_name = "prdcts"
 
     def get_queryset(self):
@@ -74,7 +74,7 @@ def EmailSent(request):
 
 class ProductDetailView(DetailView):
     model = Product
-    template_name = "detail_produit.html"
+    template_name = "Product/detail_product.html"
     context_object_name = "product"
 
     def get_context_data(self, **kwargs):
@@ -87,7 +87,7 @@ class ConnectView(LoginView):
     """
     Vue pour la connexion de l'utilisateur
     """
-    template_name = 'connexion.html'
+    template_name = 'connection/connexion.html'
 
     def post(self, request, **kwargs):
         username = request.POST.get('username', False)
@@ -100,7 +100,7 @@ class ConnectView(LoginView):
                 request, 'after-login.html',
                 {'titreh1': "hello " + username + ", you're connected"})
         else:
-            return render(request, 'connexion.html',
+            return render(request, 'connection/connexion.html',
                           {'error': 'Invalid login or password'})
 
 
@@ -108,7 +108,7 @@ class RegisterView(TemplateView):
     """
     Vue pour l'inscription de l'utilisateur
     """
-    template_name = 'register.html'
+    template_name = 'connection/register.html'
 
     def post(self, request, **kwargs):
         username = request.POST.get('username', False)
@@ -117,14 +117,14 @@ class RegisterView(TemplateView):
         user = User.objects.create_user(username, mail, password)
         user.save()
         if user is not None and user.is_active:
-            return render(request, 'connexion.html')
+            return render(request, 'connection/connexion.html')
         else:
-            return render(request, 'register.html',
+            return render(request, 'connection/register.html',
                           {'error': 'Invalid login or password'})
 
 
 class DisconnectView(TemplateView):
-    template_name = 'logout.html'
+    template_name = 'connection/logout.html'
 
     def get(self, request, **kwargs):
         print("User is disconnected")
@@ -140,13 +140,13 @@ def ProductCreate(request):
             return redirect('detail_produit', product.id)
     else:
         form = ProductForm()
-    return render(request, "new_product.html", {'form': form})
+    return render(request, "Product/new_product.html", {'form': form})
 
 
 @method_decorator(login_required, name='dispatch')
 class ProductCreateView(CreateView):
     model = Product
-    template_name = 'new_product.html'
+    template_name = 'Product/new_product.html'
     form_class = ProductForm
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -157,7 +157,7 @@ class ProductCreateView(CreateView):
 @method_decorator(login_required, name='dispatch')
 class ProductUpdateView(UpdateView):
     model = Product
-    template_name = 'update_product.html'
+    template_name = 'Product/update_product.html'
     form_class = ProductForm
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -171,8 +171,8 @@ class ProductDeleteView(DeleteView):
     Vue pour supprimer un produit
     """
     model = Product
-    template_name = 'delete_product.html'
-    success_url = reverse_lazy('Tous les produits')
+    template_name = 'Product/delete_product.html'
+    success_url = reverse_lazy('product-list')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -181,7 +181,7 @@ class ProductAttributeListView(ListView):
     Vue pour afficher la liste des attributs
     """
     model = ProductAttribute
-    template_name = "product_attribute.html"
+    template_name = "attribute/product_attribute.html"
     context_object_name = "productattributes"
 
     def get_queryset(self):
@@ -203,7 +203,7 @@ class ProductAttributeListView(ListView):
 @method_decorator(login_required, name='dispatch')
 class ProductAttributeDetailView(DetailView):
     model = ProductAttribute
-    template_name = "detail_attribute.html"
+    template_name = "attribute/detail_attribute.html"
     context_object_name = "productattribute"
 
     def get_context_data(self, **kwargs):
@@ -218,7 +218,7 @@ class ProductAttributeDetailView(DetailView):
 @method_decorator(login_required, name='dispatch')
 class ProductAttributeCreateView(CreateView):
     model = ProductAttribute
-    template_name = 'new_attribute.html'
+    template_name = 'attribute/new_attribute.html'
     form_class = AttributeForm
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -232,7 +232,7 @@ class ProductAttributeUpdateView(UpdateView):
     Vue pour mettre à jour un attribut
     """
     model = ProductAttribute
-    template_name = 'update_attribute.html'
+    template_name = 'attribute/update_attribute.html'
     form_class = AttributeForm
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -246,7 +246,7 @@ class ProductAttributeDeleteView(DeleteView):
     Vue pour supprimer un attribut
     """
     model = ProductAttribute
-    template_name = 'delete_attribute.html'
+    template_name = 'attribute/delete_attribute.html'
     success_url = reverse_lazy('attribute-list')
 
 
@@ -256,7 +256,7 @@ class ProductItemListView(ListView):
     Vue pour afficher la liste des déclinaisons
     """
     model = ProductItem
-    template_name = "list_items.html"
+    template_name = "Items/list_items.html"
     context_object_name = "productitems"
 
     def get_queryset(self):
@@ -276,7 +276,7 @@ class ProductItemListView(ListView):
 @method_decorator(login_required, name='dispatch')
 class ProductItemDetailView(DetailView):
     model = ProductItem
-    template_name = "detail_item.html"
+    template_name = "Items/detail_item.html"
     context_object_name = "productitem"
 
     def get_context_data(self, **kwargs):
@@ -293,7 +293,7 @@ class ProductItemCreateView(CreateView):
     Vue pour créer une nouvelle déclinaison
     """
     model = ProductItem
-    template_name = 'new_item.html'
+    template_name = 'Items/new_item.html'
     form_class = ProductItemForm
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -304,7 +304,7 @@ class ProductItemCreateView(CreateView):
 @method_decorator(login_required, name='dispatch')
 class ProductItemUpdateView(UpdateView):
     model = ProductItem
-    template_name = 'update_item.html'
+    template_name = 'Items/update_item.html'
     form_class = ProductItemForm
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -318,7 +318,7 @@ class ProductItemDeleteView(DeleteView):
     Vue pour supprimer une déclinaison
     """
     model = ProductItem
-    template_name = 'delete_item.html'
+    template_name = 'Items/delete_item.html'
     success_url = reverse_lazy('item-list')
 
 
