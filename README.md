@@ -1,8 +1,36 @@
 # Django
 
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
+
+## Membres du projet
+
+[![Yannis BARACHE](https://img.shields.io/badge/Yannis%20Barache-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Yannis-barache)
+[![Khalil ABADA](https://img.shields.io/badge/Khalil%20Abada-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Khalil-45)
+
 ## Objectif
 
-Ce dépôt contient un projet Django minimal, avec un modèle simple, une vue et un formulaire.
+Ce dépot était un projet de test pour apprendre à utiliser Django. 
+Maintenant il est utilisé pour réaliser un TP noté.
+
+Le projet de base comportée une application de gestion de produits. Le but du projet est de rajouter des fournisseurs et des commandes.
+
+## Installation
+
+1. Cloner le dépot
+2. Installer les dépendances : `pip install -r requirements.txt`
+3. Créer la base de données : `python manage.py migrate`
+4. Créer un super utilisateur : `python manage.py createsuperuser`
+5. Lancer le serveur de développement : `python manage.py runserver`
+6. Se connecter à l'adresse `http://localhost:8000/` pour accéder à l'interface d'administration
+7. Se connecter à l'adresse `http://localhost:8000/admin` pour accéder à l'interface d'administration
+
+
+
 
 ## Commandes importantes
 
