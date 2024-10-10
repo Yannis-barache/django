@@ -1,51 +1,58 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="fr">
-    <head>
-        <meta charset="utf-8">
-        <title>{% block title %}{% endblock %}</title>
-        {% block styles %}
-            <link rel="stylesheet" href="{% static 'styles.css' %}" />
-            <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}">
-        {% endblock %}
-    </head>
-    <body>
+
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% block styles %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}">
+    {% endblock %}
+</head>
+
+<body>
     {% block nav %}
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Tous les produits' %}">Produits</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'About' %}">À propos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'attribute-list' %}">Déclinaisons</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'item-list' %}">Items</a>
-                    </li>
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
-                        </li>
-                    {%else%}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'connexion' %}">Connexion</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">Inscription</a>
-                        </li>
-                    {%endif%}
-                </ul>
-                <!-- Barre de recherche -->
-                <form class="form-inline ml-auto" method="GET" action="{% url 'search' %}">
-                    <input class="form-control mr-sm-2" type="text" name="search" placeholder="Rechercher..." value="{{ request.GET.search }}">
-                    <button class="btn btn-success my-2 my-sm-0" type="submit">Rechercher</button>
-                </form>
-            </div>
-        </nav>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'Tous les produits' %}">Produits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'About' %}">À propos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'attribute-list' %}">Déclinaisons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'item-list' %}">Items</a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
+                </li>
+                {%else%}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'connexion' %}">Connexion</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register' %}">Inscription</a>
+                </li>
+                {%endif%}
+            </ul>
+            <!-- Barre de recherche -->
+            <form class="form-inline ml-auto" method="GET" action="{% url 'search' %}">
+                <div class="input-group">
+                    <input class="form-control" type="text" name="search" placeholder="Rechercher..."
+                        value="{{ request.GET.search }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="submit">Rechercher</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </nav>
     {% endblock %}
     <main role="main" class="container top-pushed">
         <div class="jumbotron">
@@ -58,5 +65,6 @@
             <p>&copy; 2024 - Que à moi </p>
         </div>
     </footer>
-    </body>
+</body>
+
 </html>
