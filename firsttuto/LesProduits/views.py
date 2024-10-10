@@ -6,11 +6,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.forms import BaseModelForm
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import (ListView, DetailView, TemplateView,
                                   CreateView, UpdateView, DeleteView)
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 
 from django.db.models import Q
@@ -18,8 +18,22 @@ from django.core.mail import send_mail
 
 from firsttuto.LesProduits.forms import ContactUsForm, ProductForm, AttributeForm, ProductItemForm, FournisseurForm, FournitFormSet
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur, \
-    Fournit
+    Fournit, Commande
 
+from django.utils import timezone
+from threading import Timer
+
+def is_admin(user):
+    return user.is_superuser
+
+class NonAutoriseView(TemplateView):
+    template_name = "non_autorise.html"
+
+@method_decorator(user_passes_test(is_admin, login_url='non-autorise'), name='dispatch')
+class CommandeListView(ListView):
+    model = Commande
+    template_name = "Commandes/commandes_list.html"
+    context_object_name = "commandes"
 
 class ProductListView(ListView):
     """
@@ -71,7 +85,6 @@ def ContactView(request):
 def EmailSent(request):
     return render(request, 'email-sent.html')
 
-
 class ProductDetailView(DetailView):
     model = Product
     template_name = "Product/detail_product.html"
@@ -81,6 +94,42 @@ class ProductDetailView(DetailView):
         context = super(ProductDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail produit"
         return context
+    
+    @method_decorator(user_passes_test(is_admin, login_url='non-autorise'), name='dispatch')
+    @method_decorator(login_required)
+    def post(self, request, *args, **kwargs):
+        product = self.get_object()
+        user = request.user
+        fournisseur = Fournit.objects.filter(product=product).first().fournisseur  # Assurez-vous que le produit a un fournisseur associé
+        if not fournisseur:
+            return HttpResponse("Aucun fournisseur associé à ce produit.", status=400)
+
+        # Récupérer la quantité du formulaire
+        quantity = int(request.POST.get('quantity', 1))
+
+        # Créer une nouvelle commande
+        commande = Commande.objects.create(
+            product=product,
+            fournisseur=fournisseur,
+            user=user,
+            quantity=quantity,
+            date_commande=timezone.now(),
+            status=0
+        )
+
+        # Démarrer le processus pour avancer le statut de la commande
+        self.advance_status_periodically(commande)
+
+        return redirect('detail_produit', pk=product.pk)
+
+    def advance_status_periodically(self, commande):
+        def advance_status():
+            commande.refresh_from_db()
+            if commande.status < 2:
+                commande.advance_status()
+                Timer(20, advance_status).start()
+
+        Timer(20, advance_status).start()
 
 
 class ConnectView(LoginView):

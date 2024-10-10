@@ -70,4 +70,9 @@ urlpatterns = [
     path('supplier/<pk>/delete/',
          views.SupplierDeleteView.as_view(),
          name='supplier-delete'),
+    path('commandes/', 
+          views.CommandeListView.as_view(), name='commande_list'),
+    path('non-autorise/', views.NonAutoriseView.as_view(), name='non-autorise'),
+
+
 ]

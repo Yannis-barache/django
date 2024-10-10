@@ -1,5 +1,3 @@
-
-
 {% extends "base.html" %}
 {% block content %}
     <h1>{{product.name}}</h1>
@@ -12,13 +10,26 @@
         <span id="price">{{product.price_ttc}}</span>
     </div>
     <div class="champ">
-        <label for="price">Disponibilité</label>
-        <span id="price">{{product.status}}</span>
+        <label for="status">Disponibilité</label>
+        <span id="status">{{product.status}}</span>
     </div>
-    <a href="{%  url 'product-update' product.id %}">Modifier</a>
-    <a href="{%  url 'product-delete' product.id %}">Supprimer</a>
+    <div class="champ">
+        <label for="stock">Quantité en stock</label>
+        <span id="stock">{{product.stock}}</span>
+    </div>
+    <a href="{% url 'product-update' product.id %}">Modifier</a>
+    <a href="{% url 'product-delete' product.id %}">Supprimer</a>
     <br>
     
     <a href="{% url 'product-list' %}">Retour à la liste des produits</a>
-{% endblock %}
 
+    <!-- Formulaire pour créer une commande -->
+    <form method="post">
+        {% csrf_token %}
+        <div class="champ">
+            <label for="quantity">Quantité</label>
+            <input type="number" id="quantity" name="quantity" min="1" required>
+        </div>
+        <button type="submit">Commander</button>
+    </form>
+{% endblock %}
