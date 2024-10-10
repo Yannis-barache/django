@@ -31,6 +31,40 @@ Le projet de base comportée une application de gestion de produits. Le but du p
 
 
 
+# Analyse du sujet TD noté
+
+## Ajout du fournisseur
+
+Dans la logique de l'application, un fournisseur est une personne morale qui fournit des produits.
+L'objectif était de permettre d'ajouter les fournisseurs et de les associer à des produits.
+
+### Changements
+
+- Création du modèle `Fournisseur`
+- Ajout de la relation `Fournit` entre `Fournisseur` et `Produit`
+- Déplacement des prix du produit dans le modèle `Fournit` (car le prix dépend maintenant du fournisseur)
+
+On a donc maintenant un modèle qui lie un fournisseur à des produits et des produits à des fournisseurs.
+
+### MCD
+
+![MCD ajout fournisseur](MCD/MCD_ajout_fournisseur.png)
+
+### Tâches réalisées sur cette partie
+
+- [x] Création du modèle `Fournisseur`
+- [x] Création de la relation `Fournit`
+- [x] Modification du modèle `Produit` pour ajouter la relation `Fournit`
+- [x] Modification de l'interface d'administration pour gérer les fournisseurs
+- [x] Modification de l'interface d'administration pour gérer les relations `Fournit`
+- [x] Modification de l'interface d'administration pour gérer les produits
+- [x] CRUD entier pour les fournisseurs hors de l'interface d'administration
+
+## Ajout des commandes
+
+
+
+
 
 ## Commandes importantes
 
