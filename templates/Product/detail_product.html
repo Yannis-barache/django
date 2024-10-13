@@ -1,5 +1,3 @@
-
-
 {% extends "base.html" %}
 {% block content %}
     <h1>{{product.name}}</h1>
@@ -12,13 +10,46 @@
         <span id="price">{{product.price_ttc}}</span>
     </div>
     <div class="champ">
-        <label for="price">Disponibilité</label>
-        <span id="price">{{product.status}}</span>
+        <label for="status">Disponibilité</label>
+        <span id="status">{{product.status}}</span>
     </div>
-    <a href="{%  url 'product-update' product.id %}">Modifier</a>
-    <a href="{%  url 'product-delete' product.id %}">Supprimer</a>
+    <a href="{% url 'product-update' product.id %}">Modifier</a>
+    <a href="{% url 'product-delete' product.id %}">Supprimer</a>
     <br>
     
     <a href="{% url 'product-list' %}">Retour à la liste des produits</a>
-{% endblock %}
 
+    <!-- Formulaire pour créer une commande -->
+    <form method="post">
+        {% csrf_token %}
+        <div class="champ">
+            <label for="quantity">Quantité</label>
+            <input type="number" id="quantity" name="quantity" min="1" required>
+        </div>
+        <div class="champ">
+            <label for="fournisseur">Fournisseur</label>
+            <select id="fournisseur" name="fournisseur" required onchange="updateStock()">
+                {% for fournit in fournisseurs %}
+                    <option value="{{ fournit.fournisseur.id }}" data-stock="{{ fournit.stock }}">{{ fournit.fournisseur.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="champ">
+            <label for="stock">Quantité en stock</label>
+            <span id="fournisseur-stock"></span>
+        </div>
+        <button type="submit">Commander</button>
+    </form>
+
+    <script>
+        function updateStock() {
+            var fournisseurSelect = document.getElementById('fournisseur');
+            var selectedOption = fournisseurSelect.options[fournisseurSelect.selectedIndex];
+            var stock = selectedOption.getAttribute('data-stock');
+            document.getElementById('fournisseur-stock').innerText = stock;
+        }
+
+        // Appel de la fonction pour mettre à jour le stock au chargement de la page
+        updateStock();
+    </script>
+{% endblock %}

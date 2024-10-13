@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="my-4">Liste des commandes</h1>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark"></thead>
+            <tr>
+                <th>Produit</th>
+                <th>Fournisseur</th>
+                <th>Utilisateur</th>
+                <th>Quantité</th>
+                <th>Date de commande</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commande in commandes %}
+                <tr>
+                    <td>{{ commande.product.name }}</td>
+                    <td>{{ commande.fournisseur.name }}</td>
+                    <td>{{ commande.user.username }}</td>
+                    <td>{{ commande.quantity }}</td>
+                    <td>{{ commande.date_commande }}</td>
+                    <td>{{ commande.get_status_display }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
