@@ -26,3 +26,8 @@ jobs:
         coverage run --source='firsttuto/LesProduits' manage.py test firsttuto.LesProduits.tests
         coverage report
         coverage xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        file: ./coverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
