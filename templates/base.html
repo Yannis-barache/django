@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load custom_filters %}
 <html lang="fr">
 
 <head>
@@ -32,12 +33,12 @@
                     <li>
                         <a class="nav-link" href="{% url 'supplier-list' %}">Fournisseurs</a>
                     </li>
+                    {% if user|is_admin %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'commande_list' %}">Commandes</a>
+                        </li>
+                    {% endif %}
                     {% if user.is_authenticated %}
-                        {% if user.is_superuser %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'commande_list' %}">Commandes</a>
-                            </li>
-                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
                         </li>
