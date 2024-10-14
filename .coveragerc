@@ -1,0 +1,8 @@
+[run]
+source = firsttuto/LesProduits
+
+[report]
+omit =
+    */tests/*
+    */migrations/*
+    */tests.py
