@@ -3,6 +3,7 @@
 """
 from django.db import models
 
+
 PRODUCT_STATUS = ((0, 'Offline'), (1, 'Online'), (2, 'Out of stock'))
 
 # Create your models here.
@@ -139,6 +140,51 @@ class Fournit(models.Model):
     price_ttc = models.DecimalField(max_digits=8,
                                     decimal_places=2,
                                     verbose_name="Prix unitaire TTC")
+    stock = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.fournisseur.name} fournit {self.product.name} à {self.price_ht} HT et {self.price_ttc} TTC"
+
+class Commande(models.Model):
+    """
+    Modèle de données pour la relation entre les commandes, les produits et les fournisseurs
+
+    Attributs:
+        product : Produit commandé
+        fournisseur : Fournisseur du produit
+        user : Utilisateur qui a passé la commande
+        quantity : Quantité commandée
+        date_commande : Date de la commande
+        status : Statut de la commande (en préparation, passée, reçue)
+
+    Méthodes:
+
+        __str__ : Retourne le nom de l'utilisateur, le nom du produit, la quantité et la date de la commande
+    """
+    STATUS_CHOICES = (
+        (0, 'En préparation'),
+        (1, 'Passée'),
+        (2, 'Reçue'),
+    )
+
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    fournisseur = models.ForeignKey('Fournisseur', on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    date_commande = models.DateTimeField(auto_now_add=True)
+    status = models.SmallIntegerField(choices=STATUS_CHOICES, default=0)
+
+    def __str__(self):
+        return f"{self.user.username} a commandé {self.quantity} de {self.product.name} chez {self.fournisseur.name} le {self.date_commande}"
+
+    def save(self, *args, **kwargs):
+        if self.status == 2:  # Commande reçue
+            fournit = Fournit.objects.get(product=self.product, fournisseur=self.fournisseur)
+            fournit.stock += self.quantity
+            fournit.save()
+        super().save(*args, **kwargs)
+
+    def advance_status(self):
+        if self.status < 2:
+            self.status += 1
+            self.save()
