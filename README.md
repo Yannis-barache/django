@@ -22,14 +22,8 @@ Le projet de base comportée une application de gestion de produits. Le but du p
 ## Installation
 
 1. Cloner le dépot
-2. Installer les dépendances : `pip install -r requirements.txt`
-3. Créer la base de données : `python manage.py migrate`
-4. Créer un super utilisateur : `python manage.py createsuperuser`
-5. Lancer le serveur de développement : `python manage.py runserver`
-6. Se connecter à l'adresse `http://localhost:8000/` pour accéder à l'interface d'administration
-7. Se connecter à l'adresse `http://localhost:8000/admin` pour accéder à l'interface d'administration
-
-
+2. Exécuter `./setup.sh` pour mettre en place tout le projet et peupler la BD
+3. Exécuter `python manage.py runserver` pour lancer le serveur de développement
 
 # Analyse du sujet TD noté
 
