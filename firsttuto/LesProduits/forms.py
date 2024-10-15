@@ -45,6 +45,9 @@ class FournisseurForm(forms.ModelForm):
         model = Fournisseur
         fields = ['name']
 
+    def get_name(self):
+        return self.cleaned_data['name']
+
 
 FournitFormSet = forms.inlineformset_factory(Fournisseur,
                                              Fournit,

@@ -1,45 +1,64 @@
 {% extends "base.html" %}
+{% load custom_filters %}
 {% block content %}
     <h1>{{product.name}}</h1>
-    <div class="champ">
-        <label for="price">Prix HT</label>
-        <span id="price">{{product.price_ht}}</span>
+    <div class="table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Pric HT</th>
+                    <th>Prix TTC</th>
+                    <th>Fournisseur</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fournit in fournisseurs %}
+                    <tr>
+                        <td>{{ fournit.price_ht }}</td>
+                        <td>{{ fournit.price_ttc}}</td>
+                        <td>{{ fournit.fournisseur.name }}</td>
+                        <td>{{ fournit.stock }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <div class="champ">
-        <label for="price">Prix TTC</label>
-        <span id="price">{{product.price_ttc}}</span>
-    </div>
-    <div class="champ">
-        <label for="status">Disponibilité</label>
-        <span id="status">{{product.status}}</span>
-    </div>
-    <a href="{% url 'product-update' product.id %}">Modifier</a>
-    <a href="{% url 'product-delete' product.id %}">Supprimer</a>
-    <br>
     
-    <a href="{% url 'product-list' %}">Retour à la liste des produits</a>
+    <a href="{% url 'product-list' %}" class="btn btn-primary">Retour à la liste des produits</a>
+    
+    
 
-    <!-- Formulaire pour créer une commande -->
-    <form method="post">
+    {% if user|is_admin  %}
+        <h2>Les stocks sont au plus bas?</h2>
+        <!-- Formulaire pour créer une commande -->
+    <form method="post" class="needs-validation" novalidate>
         {% csrf_token %}
-        <div class="champ">
+        <div class="form-group">
             <label for="quantity">Quantité</label>
-            <input type="number" id="quantity" name="quantity" min="1" required>
+            <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+            <div class="invalid-feedback">
+                Veuillez entrer une quantité valide.
+            </div>
         </div>
-        <div class="champ">
+        <div class="form-group">
             <label for="fournisseur">Fournisseur</label>
-            <select id="fournisseur" name="fournisseur" required onchange="updateStock()">
+            <select class="form-control" id="fournisseur" name="fournisseur" required onchange="updateStock()">
                 {% for fournit in fournisseurs %}
                     <option value="{{ fournit.fournisseur.id }}" data-stock="{{ fournit.stock }}">{{ fournit.fournisseur.name }}</option>
                 {% endfor %}
             </select>
+            <div class="invalid-feedback">
+                Veuillez sélectionner un fournisseur.
+            </div>
         </div>
-        <div class="champ">
+        <div class="form-group">
             <label for="stock">Quantité en stock</label>
-            <span id="fournisseur-stock"></span>
+            <span id="fournisseur-stock" class="form-control-plaintext"></span>
         </div>
-        <button type="submit">Commander</button>
+        <button type="submit" class="btn btn-primary">Commander</button>
     </form>
+    {% endif %}
 
     <script>
         function updateStock() {

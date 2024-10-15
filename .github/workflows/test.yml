@@ -21,6 +21,13 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Run Tests
+    - name: Run tests with coverage
       run: |
-         python manage.py test firsttuto.LesProduits.tests
+        coverage run --source='firsttuto/LesProduits' manage.py test firsttuto.LesProduits.tests
+        coverage report
+        coverage xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        file: ./coverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
