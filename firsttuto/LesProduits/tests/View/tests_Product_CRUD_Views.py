@@ -1,8 +1,7 @@
 from django.contrib.auth.models import User
-from django.test import SimpleTestCase, TestCase
-from django.urls import reverse, resolve
+from django.test import TestCase
+from django.urls import reverse
 from firsttuto.LesProduits.models import Product
-from firsttuto.LesProduits.views import ProductListView, ProductCreateView, ProductUpdateView, ProductDeleteView,ProductDetailView
 
 class ProductCreateViewTest(TestCase):
 

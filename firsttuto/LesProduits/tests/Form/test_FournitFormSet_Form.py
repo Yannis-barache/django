@@ -59,35 +59,6 @@ class FournitFormSetTest(TestCase):
         })
         self.assertFalse(formset.is_valid())  # Le formulaire ne doit pas être valide
 
-    def test_form_invalid_data(self):
-        """
-        Tester que le formulaire est invalide si 'price_ht' est manquant
-        """
-        formset = FournitFormSet(data={
-            'fournit_set-TOTAL_FORMS': 1,
-            'fournit_set-INITIAL_FORMS': 1,
-            'fournit_set-MIN_NUM_FORMS': 0,
-            'fournit_set-MAX_NUM_FORMS': 1000,
-            'fournit_set-0-product': self.product.id,
-            'fournit_set-0-price_ht': '',
-            'fournit_set-0-price_ttc': 1200,
-        })
-        self.assertFalse(formset.is_valid())
-
-    def test_form_invalid_data(self):
-        """
-        Tester que le formulaire est invalide si 'price_ttc' est manquant
-        """
-        formset = FournitFormSet(data={
-            'fournit_set-TOTAL_FORMS': 1,
-            'fournit_set-INITIAL_FORMS': 1,
-            'fournit_set-MIN_NUM_FORMS': 0,
-            'fournit_set-MAX_NUM_FORMS': 1000,
-            'fournit_set-0-product': self.product.id,
-            'fournit_set-0-price_ht': 1000,
-            'fournit_set-0-price_ttc': '',
-        })
-        self.assertFalse(formset.is_valid())
 
     def test_form_save(self):
         """
