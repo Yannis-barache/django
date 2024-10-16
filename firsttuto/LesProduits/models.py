@@ -2,7 +2,7 @@
     Modèle de données pour les produits
 """
 from django.db import models
-
+from django.db.models import Sum
 
 PRODUCT_STATUS = ((0, 'Offline'), (1, 'Online'), (2, 'Out of stock'))
 
@@ -81,7 +81,7 @@ class ProductAttribute(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class ProductAttributeValue(models.Model):
@@ -115,7 +115,7 @@ class Fournisseur(models.Model):
                                       related_name="fournisseurs")
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Fournit(models.Model):
@@ -170,14 +170,19 @@ class Commande(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     date_commande = models.DateTimeField(auto_now_add=True)
     status = models.SmallIntegerField(choices=STATUS_CHOICES, default=0)
+    fournisseur = models.ForeignKey('Fournisseur', on_delete=models.CASCADE, null=False, default=1)
 
     def __str__(self):
-        return f"{self.user.username} a commandé {self.quantity} de {self.product.name} chez {self.fournisseur.name} le {self.date_commande}"
+        return f"{self.user.username} - {self.fournisseur} - {self.status}"
 
     def advance_status(self):
         if self.status < 2:
             self.status += 1
             self.save()
+
+    def get_quantity(self):
+        return CommandeProduct.objects.filter(commande=self).aggregate(Sum('quantity'))['quantity__sum']
+
 
 class CommandeProduct(models.Model):
     """
@@ -197,4 +202,8 @@ class CommandeProduct(models.Model):
     commande = models.ForeignKey('Commande', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.product.name} x {self.quantity} - {self.commande.user.username}"
+        return f"{self.product.name} x {self.quantity} - {self.commande.fournisseur.name}"
+
+
+
+

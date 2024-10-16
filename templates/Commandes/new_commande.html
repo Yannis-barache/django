@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Nouvelle commande{% endblock %}
+{% block content %}
+    <h1>Nouvelle commande</h1>
+    <form method="post" id="commande-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ formset.management_form }}
+        <h2>Les produits</h2>
+        <div id="formset-container">
+            {% for form in formset %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        {{ form.as_p }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <a href="{% url 'commande_list' %}" class="btn btn-primary mt-2">Retour à la liste des commandes</a>
+        <button type="submit" name="save_and_add_another" class="btn btn-info mt-2">Enregistrer et ajouter un autre produit</button>
+        <button type="submit" class="btn btn-primary mt-2">Enregistrer</button>
+    </form>
+{% endblock %}

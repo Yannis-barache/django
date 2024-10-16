@@ -1,8 +1,10 @@
 """Module contenant les classes d'administration des modèles de l'application LesProduits."""
 
 from django.contrib import admin
+
+from .forms import CommandeProductForm
 from .models import (Product, ProductAttribute, ProductAttributeValue,
-                     ProductItem, Fournisseur, Fournit)
+                     ProductItem, Fournisseur, Fournit, CommandeProduct, Commande)
 
 
 class FournitInline(admin.TabularInline):
@@ -18,7 +20,7 @@ class ProductItemAdmin(admin.TabularInline):
     Classe d'administration pour le modèle ProductItem.
     """
     model = ProductItem
-    filter_vertical = ("attributes", )
+    filter_vertical = ("attributes",)
 
 
 class ProductFilter(admin.SimpleListFilter):
@@ -60,7 +62,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ["name"]
     radio_fields = {"status": admin.VERTICAL}
     actions = [set_product_online, set_product_offline]
-    list_filter = (ProductFilter, )
+    list_filter = (ProductFilter,)
 
 
 class FournisseurAdmin(admin.ModelAdmin):
@@ -68,9 +70,32 @@ class FournisseurAdmin(admin.ModelAdmin):
         FournitInline,
     ]
 
+class CommandeProductInline(admin.TabularInline):
+    model = CommandeProduct
+    form  = CommandeProductForm
+    extra = 0
+
+class CommandeAdmin(admin.ModelAdmin):
+    model = Commande
+    list_display = ["id", "date_commande", "status"]
+    list_editable = ["status"]
+    list_filter = ["status"]
+    date_hierarchy = "date_commande"
+    search_fields = ["id"]
+    radio_fields = {"status": admin.HORIZONTAL}
+    actions = ["advance_status"]
+    inlines = [CommandeProductInline]
+
+
+
+
+
+
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductItem)
 admin.site.register(ProductAttribute)
 admin.site.register(ProductAttributeValue)
 admin.site.register(Fournisseur, FournisseurAdmin)
+admin.site.register(Fournit)
+admin.site.register(Commande, CommandeAdmin)

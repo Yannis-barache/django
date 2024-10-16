@@ -4,6 +4,7 @@ coverage
 dill
 Django
 django-debug-toolbar
+django-extensions
 importlib_metadata
 isort
 mccabe

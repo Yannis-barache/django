@@ -21,8 +21,23 @@ pip install --upgrade pip
 
 # Install dependencies
 pip install -r requirements.txt
-npm install
-mv node_modules/ firsttuto/LesProduits/static/
+
+# Check for the --skip-bootstrap parameter
+SKIP_BOOTSTRAP=false
+for arg in "$@"
+do
+    if [ "$arg" == "--skip-bootstrap" ]; then
+        SKIP_BOOTSTRAP=true
+        break
+    fi
+done
+
+# Conditionally install Bootstrap
+if [ "$SKIP_BOOTSTRAP" = false ]; then
+    npm install
+    mv node_modules/ firsttuto/LesProduits/static/
+fi
+
 
 # Apply migrations to set up the database
 python manage.py migrate
@@ -38,7 +53,9 @@ python manage.py loaddata db.json
 # Run the development server
 python manage.py runserver
 
+
 echo "Setup fini, accédez au serveur au l'url suivant http://localhost:8000/"
 echo "Pour accéder à l'interface d'administration, allez à http://localhost:8000/admin/"
+echo "Pour lancer le serveur ultérieurement, exécutez la commande suivante: python manage.py runserver (dans le venv)"
 
 

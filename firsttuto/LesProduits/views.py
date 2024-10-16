@@ -1,7 +1,7 @@
 """
 Les vues de l'application LesProduits
 """
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, user_logged_in
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.forms import BaseModelForm
@@ -16,9 +16,10 @@ from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.core.mail import send_mail
 
-from firsttuto.LesProduits.forms import ProductOrderForm, ContactUsForm, ProductForm, AttributeForm, ProductItemForm, FournisseurForm, FournitFormSet
+from firsttuto.LesProduits.forms import ProductOrderForm, ContactUsForm, ProductForm, AttributeForm, ProductItemForm, \
+    FournisseurForm, FournitFormSet, CommandeForm, CommandeProductFormSet, BaseCommandeProductFormSet
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur, \
-    Fournit, Commande
+    Fournit, Commande, CommandeProduct
 
 from django.contrib import messages
 
@@ -33,9 +34,118 @@ class NonAutoriseView(TemplateView):
 
 @method_decorator(user_passes_test(is_admin, login_url='non-autorise'), name='dispatch')
 class CommandeListView(ListView):
+    """
+    Vue pour afficher la liste des commandes
+    """
     model = Commande
     template_name = "Commandes/commandes_list.html"
     context_object_name = "commandes"
+
+    def get_queryset(self):
+        return Commande.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(CommandeListView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Liste des commandes"
+        return context
+
+
+@method_decorator(user_passes_test(is_admin, login_url='non-autorise'), name='dispatch')
+class CommandeDetailView(DetailView):
+    """
+    Vue pour afficher les détails d'une commande
+    """
+    model = Commande
+    template_name = "Commandes/detail_commande.html"
+    context_object_name = "commande"
+
+    def get_context_data(self, **kwargs):
+
+        context = super(CommandeDetailView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Détail commande"
+        context['products'] = CommandeProduct.objects.filter(commande=self.get_object())
+        return context
+
+    def post(self, request, *args, **kwargs):
+        commande = self.get_object()
+        commande.advance_status()
+        return redirect('detail_commande', pk=commande.pk)
+
+@method_decorator(user_passes_test(is_admin, login_url='non-autorise'), name='dispatch')
+class CommandeUpdateView(UpdateView):
+    """
+    Vue pour mettre à jour une commande
+    """
+    model = Commande
+    form_class = CommandeForm
+    template_name = 'Commandes/update_commande.html'
+    success_url = reverse_lazy('commande_list')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['formset'] = CommandeProductFormSet(self.request.POST, instance=self.object)
+        else:
+            data['formset'] = CommandeProductFormSet(instance=self.object)
+        data['fournisseur'] = self.object.fournisseur  # Ensure supplier is added to context
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            if "save_and_add_another" in self.request.POST:
+                return redirect('commande-update', pk=self.object.pk)
+            return redirect(self.success_url)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+@method_decorator(user_passes_test(is_admin, login_url='non-autorise'), name='dispatch')
+class CommandeCreateView(CreateView):
+    """
+    Vue pour créer une nouvelle commande
+    """
+    model = Commande
+    form_class = CommandeForm
+    template_name = 'Commandes/new_commande.html'
+    success_url = reverse_lazy('commande_list')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['formset'] = CommandeProductFormSet(self.request.POST)
+        else:
+            data['formset'] = CommandeProductFormSet()
+        return data
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user  # Assign the logged-in user
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            return redirect(self.success_url)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+
+class CommandeDeleteView(DeleteView):
+    """
+    Vue pour supprimer une commande
+    """
+    model = Commande
+    template_name = 'Commandes/delete_commande.html'
+    success_url = reverse_lazy('commande_list')
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+
 
 class ProductListView(ListView):
     """
@@ -493,3 +603,4 @@ def SearchView(request):
         'items': items,
     }
     return render(request, 'search_results.html', context)
+
