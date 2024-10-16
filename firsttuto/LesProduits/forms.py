@@ -53,3 +53,13 @@ FournitFormSet = forms.inlineformset_factory(Fournisseur,
                                              Fournit,
                                              form=FournitForm,
                                              extra=1)
+
+class ProductOrderForm(forms.Form):
+    quantity = forms.IntegerField(min_value=1, label="Quantité")
+    fournisseur = forms.ModelChoiceField(queryset=Fournisseur.objects.none(), label="Fournisseur")
+
+    def __init__(self, *args, **kwargs):
+        product = kwargs.pop('product', None)
+        super(ProductOrderForm, self).__init__(*args, **kwargs)
+        if product:
+            self.fields['fournisseur'].queryset = Fournisseur.objects.filter(fournit__product=product)

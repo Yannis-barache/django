@@ -16,9 +16,11 @@ from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.core.mail import send_mail
 
-from firsttuto.LesProduits.forms import ContactUsForm, ProductForm, AttributeForm, ProductItemForm, FournisseurForm, FournitFormSet
+from firsttuto.LesProduits.forms import ProductOrderForm, ContactUsForm, ProductForm, AttributeForm, ProductItemForm, FournisseurForm, FournitFormSet
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur, \
     Fournit, Commande
+
+from django.contrib import messages
 
 from django.utils import timezone
 from threading import Timer
@@ -94,32 +96,35 @@ class ProductDetailView(DetailView):
         context = super(ProductDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail produit"
         context['fournisseurs'] = Fournit.objects.filter(product=self.get_object())
+        context['order_form'] = ProductOrderForm(product=self.get_object())
         return context
 
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
         product = self.get_object()
         user = request.user
-        fournisseur_id = request.POST.get('fournisseur')
-        fournisseur = get_object_or_404(Fournisseur, id=fournisseur_id)
+        form = ProductOrderForm(request.POST, product=product)
+        if form.is_valid():
+            fournisseur = form.cleaned_data['fournisseur']
+            quantity = form.cleaned_data['quantity']
 
-        # Récupérer la quantité du formulaire
-        quantity = int(request.POST.get('quantity', 1))
+            # Créer une nouvelle commande
+            commande = Commande.objects.create(
+                product=product,
+                fournisseur=fournisseur,
+                user=user,
+                quantity=quantity,
+                date_commande=timezone.now(),
+                status=0
+            )
 
-        # Créer une nouvelle commande
-        commande = Commande.objects.create(
-            product=product,
-            fournisseur=fournisseur,
-            user=user,
-            quantity=quantity,
-            date_commande=timezone.now(),
-            status=0
-        )
+            # Démarrer le processus pour avancer le statut de la commande
+            self.advance_status_periodically(commande)
 
-        # Démarrer le processus pour avancer le statut de la commande
-        self.advance_status_periodically(commande)
-
-        return redirect('detail_produit', pk=product.pk)
+            return redirect('detail_produit', pk=product.pk)
+        else:
+            messages.error(request, "Erreur lors de la création de la commande.")
+            return self.get(request, *args, **kwargs)
 
     def advance_status_periodically(self, commande):
         def advance_status():

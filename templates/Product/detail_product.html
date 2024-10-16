@@ -6,7 +6,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Pric HT</th>
+                    <th>Prix HT</th>
                     <th>Prix TTC</th>
                     <th>Fournisseur</th>
                     <th>Stock</th>
@@ -27,42 +27,19 @@
     
     <a href="{% url 'product-list' %}" class="btn btn-primary">Retour à la liste des produits</a>
     
-    
-
-    {% if user|is_admin  %}
+    {% if user|is_admin %}
         <h2>Les stocks sont au plus bas?</h2>
         <!-- Formulaire pour créer une commande -->
-    <form method="post" class="needs-validation" novalidate>
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="quantity">Quantité</label>
-            <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
-            <div class="invalid-feedback">
-                Veuillez entrer une quantité valide.
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="fournisseur">Fournisseur</label>
-            <select class="form-control" id="fournisseur" name="fournisseur" required onchange="updateStock()">
-                {% for fournit in fournisseurs %}
-                    <option value="{{ fournit.fournisseur.id }}" data-stock="{{ fournit.stock }}">{{ fournit.fournisseur.name }}</option>
-                {% endfor %}
-            </select>
-            <div class="invalid-feedback">
-                Veuillez sélectionner un fournisseur.
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="stock">Quantité en stock</label>
-            <span id="fournisseur-stock" class="form-control-plaintext"></span>
-        </div>
-        <button type="submit" class="btn btn-primary">Commander</button>
-    </form>
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {{ order_form.as_p }}
+            <button type="submit" class="btn btn-primary">Commander</button>
+        </form>
     {% endif %}
 
     <script>
         function updateStock() {
-            var fournisseurSelect = document.getElementById('fournisseur');
+            var fournisseurSelect = document.getElementById('id_fournisseur');
             var selectedOption = fournisseurSelect.options[fournisseurSelect.selectedIndex];
             var stock = selectedOption.getAttribute('data-stock');
             document.getElementById('fournisseur-stock').innerText = stock;
