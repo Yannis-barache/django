@@ -168,9 +168,7 @@ class Commande(models.Model):
     )
 
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
-    fournisseur = models.ForeignKey('Fournisseur', on_delete=models.CASCADE)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
     date_commande = models.DateTimeField(auto_now_add=True)
     status = models.SmallIntegerField(choices=STATUS_CHOICES, default=0)
 
@@ -188,3 +186,23 @@ class Commande(models.Model):
         if self.status < 2:
             self.status += 1
             self.save()
+
+class CommandeProduct(models.Model):
+    """
+    Modèle de données pour les produits commandés
+
+    Attributs:
+        product : Produit commandé
+        quantity : Quantité commandée
+        commande : Commande associée
+
+    Méthodes:
+
+        __str__ : Retourne le nom du produit, la quantité et la commande associée
+    """
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    commande = models.ForeignKey('Commande', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity} - {self.commande.user.username}"
