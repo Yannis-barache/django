@@ -118,6 +118,14 @@ class CommandeProductForm(forms.ModelForm):
             fournisseur = commande.fournisseur
             self.fields['product'].queryset = Product.objects.filter(fournisseurs=fournisseur)
 
+class CommandeStatusForm(forms.ModelForm):
+    class Meta:
+        model = Commande
+        fields = ['status']
+        widgets = {
+            'status': forms.Select(choices=Commande.STATUS_CHOICES),
+        }
+
 
 CommandeProductFormSet = forms.inlineformset_factory(
     Commande,

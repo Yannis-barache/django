@@ -17,14 +17,16 @@ from django.db.models import Q
 from django.core.mail import send_mail
 
 from firsttuto.LesProduits.forms import ProductOrderForm, ContactUsForm, ProductForm, AttributeForm, ProductItemForm, \
-    FournisseurForm, FournitFormSet, CommandeForm, CommandeProductFormSet, BaseCommandeProductFormSet
+    FournisseurForm, FournitFormSet, CommandeForm, CommandeProductFormSet, BaseCommandeProductFormSet, \
+    CommandeStatusForm
 from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Fournisseur, \
     Fournit, Commande, CommandeProduct
 
 from django.contrib import messages
 
 from django.utils import timezone
-from threading import Timer
+from .services import CommandeTimerService
+
 
 def is_admin(user):
     return user.is_superuser
@@ -47,7 +49,16 @@ class CommandeListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(CommandeListView, self).get_context_data(**kwargs)
         context['titremenu'] = "Liste des commandes"
+        context['status_form'] = CommandeStatusForm()
         return context
+
+    def post(self, request, *args, **kwargs):
+        commande_id = request.POST.get('commande_id')
+        commande = Commande.objects.get(id=commande_id)
+        form = CommandeStatusForm(request.POST, instance=commande)
+        if form.is_valid():
+            form.save()
+        return redirect('commande_list')
 
 
 @method_decorator(user_passes_test(is_admin, login_url='non-autorise'), name='dispatch')
@@ -97,8 +108,9 @@ class CommandeUpdateView(UpdateView):
             self.object = form.save()
             formset.instance = self.object
             formset.save()
-            if "save_and_add_another" in self.request.POST:
-                return redirect('commande-update', pk=self.object.pk)
+            timer_service = CommandeTimerService(self.object.id)
+            if self.object.status == 0:
+                timer_service.start_status_timer()
             return redirect(self.success_url)
         else:
             return self.render_to_response(self.get_context_data(form=form))
@@ -122,13 +134,15 @@ class CommandeCreateView(CreateView):
         return data
 
     def form_valid(self, form):
-        form.instance.user = self.request.user  # Assign the logged-in user
+        form.instance.user = self.request.user
         context = self.get_context_data()
         formset = context['formset']
         if formset.is_valid():
             self.object = form.save()
             formset.instance = self.object
             formset.save()
+            timer_service = CommandeTimerService(self.object.id)
+            timer_service.start_status_timer()
             return redirect(self.success_url)
         else:
             return self.render_to_response(self.get_context_data(form=form))
