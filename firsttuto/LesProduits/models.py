@@ -167,20 +167,12 @@ class Commande(models.Model):
         (2, 'Reçue'),
     )
 
-    product = models.ForeignKey('Product', on_delete=models.CASCADE)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     date_commande = models.DateTimeField(auto_now_add=True)
     status = models.SmallIntegerField(choices=STATUS_CHOICES, default=0)
 
     def __str__(self):
         return f"{self.user.username} a commandé {self.quantity} de {self.product.name} chez {self.fournisseur.name} le {self.date_commande}"
-
-    def save(self, *args, **kwargs):
-        if self.status == 2:  # Commande reçue
-            fournit = Fournit.objects.get(product=self.product, fournisseur=self.fournisseur)
-            fournit.stock += self.quantity
-            fournit.save()
-        super().save(*args, **kwargs)
 
     def advance_status(self):
         if self.status < 2:
