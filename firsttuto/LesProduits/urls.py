@@ -70,8 +70,28 @@ urlpatterns = [
     path('supplier/<pk>/delete/',
          views.SupplierDeleteView.as_view(),
          name='supplier-delete'),
-    path('commandes/', 
+    path('commandes/',
           views.CommandeListView.as_view(), name='commande_list'),
+
+    path('commande/<pk>',
+            views.CommandeDetailView.as_view(),
+            name='commande-detail'),
+
+    path('commande/update/<pk>',
+            views.CommandeUpdateView.as_view(),
+            name='commande-update'),
+
+    path('commande/add/',
+            views.CommandeCreateView.as_view(),
+            name='commande-create'),
+
+    path('commande/delete/<pk>',
+            views.CommandeDeleteView.as_view(),
+            name='commande-delete'),
+
+
+
+
     path('non-autorise/', views.NonAutoriseView.as_view(), name='non-autorise'),
 
 
