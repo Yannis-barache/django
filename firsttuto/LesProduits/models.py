@@ -174,6 +174,11 @@ class Commande(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.fournisseur} - {self.status}"
+    
+    def advance_status(self):
+        if self.status < 2:
+            self.status += 1
+            self.save()
 
     def get_quantity(self):
         return CommandeProduct.objects.filter(commande=self).aggregate(Sum('quantity'))['quantity__sum']

@@ -25,7 +25,6 @@ from firsttuto.LesProduits.models import Product, ProductAttribute, ProductAttri
 from django.contrib import messages
 
 from django.utils import timezone
-from .services import CommandeTimerService
 
 
 def is_admin(user):
@@ -49,16 +48,24 @@ class CommandeListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(CommandeListView, self).get_context_data(**kwargs)
         context['titremenu'] = "Liste des commandes"
-        context['status_form'] = CommandeStatusForm()
         return context
 
     def post(self, request, *args, **kwargs):
         commande_id = request.POST.get('commande_id')
         commande = Commande.objects.get(id=commande_id)
         form = CommandeStatusForm(request.POST, instance=commande)
-        if form.is_valid():
-            form.save()
+        if form.is_valid() and 'advance_status' in request.POST:
+            commande.advance_status()
+        if commande.status == 2:  # Si le statut est "Reçue"
+            self.update_product_stock(commande)
         return redirect('commande_list')
+    
+    def update_product_stock(self, commande):
+        commande_products = CommandeProduct.objects.filter(commande=commande)
+        for cp in commande_products:
+            fournit = Fournit.objects.get(product=cp.product, fournisseur=commande.fournisseur)
+            fournit.stock += cp.quantity
+            fournit.save()
 
 
 @method_decorator(user_passes_test(is_admin, login_url='non-autorise'), name='dispatch')
@@ -108,9 +115,6 @@ class CommandeUpdateView(UpdateView):
             self.object = form.save()
             formset.instance = self.object
             formset.save()
-            timer_service = CommandeTimerService(self.object.id)
-            if self.object.status == 0:
-                timer_service.start_status_timer()
             return redirect(self.success_url)
         else:
             return self.render_to_response(self.get_context_data(form=form))
@@ -141,8 +145,6 @@ class CommandeCreateView(CreateView):
             self.object = form.save()
             formset.instance = self.object
             formset.save()
-            timer_service = CommandeTimerService(self.object.id)
-            timer_service.start_status_timer()
             return redirect(self.success_url)
         else:
             return self.render_to_response(self.get_context_data(form=form))
@@ -234,30 +236,28 @@ class ProductDetailView(DetailView):
 
             # Créer une nouvelle commande
             commande = Commande.objects.create(
-                product=product,
                 fournisseur=fournisseur,
                 user=user,
-                quantity=quantity,
                 date_commande=timezone.now(),
                 status=0
             )
 
-            # Démarrer le processus pour avancer le statut de la commande
-            self.advance_status_periodically(commande)
+            # Vérifier si une instance de CommandeProduct existe déjà
+            commande_product, created = CommandeProduct.objects.get_or_create(
+                product=product,
+                commande=commande,
+                defaults={'quantity': quantity}
+            )
+
+            # Ajouter la quantité au stock existant si l'instance existe déjà
+            if not created:
+                commande_product.quantity += quantity
+                commande_product.save()
 
             return redirect('detail_produit', pk=product.pk)
         else:
             messages.error(request, "Erreur lors de la création de la commande.")
             return self.get(request, *args, **kwargs)
-
-    def advance_status_periodically(self, commande):
-        def advance_status():
-            commande.refresh_from_db()
-            if commande.status < 2:
-                commande.advance_status()
-                Timer(20, advance_status).start()
-
-        Timer(20, advance_status).start()
 
 
 class ConnectView(LoginView):

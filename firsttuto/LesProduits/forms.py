@@ -121,10 +121,15 @@ class CommandeProductForm(forms.ModelForm):
 class CommandeStatusForm(forms.ModelForm):
     class Meta:
         model = Commande
-        fields = ['status']
-        widgets = {
-            'status': forms.Select(choices=Commande.STATUS_CHOICES),
-        }
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['advance_status'] = forms.BooleanField(
+            required=False,
+            widget=forms.HiddenInput,
+            initial=True
+        )
 
 
 CommandeProductFormSet = forms.inlineformset_factory(

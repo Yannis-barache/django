@@ -20,15 +20,18 @@
                     <td>{{ commande.user.username }}</td>
                     <td>{{ commande.get_quantity }}</td>
                     <td>{{ commande.date_commande }}</td>
+                    <td>{{ commande.get_status_display }}</td>
                     <td>
                         <form method="post" action="{% url 'commande_list' %}">
                             {% csrf_token %}
                             <input type="hidden" name="commande_id" value="{{ commande.id }}">
-                            <select name="status" onchange="this.form.submit()">
-                                {% for value, label in commande.STATUS_CHOICES %}
-                                    <option value="{{ value }}" {% if commande.status == value %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
+                            <button type="submit" name="advance_status" class="btn btn-primary" {% if commande.status == 2 %}disabled{% endif %}>
+                                {% if commande.status == 2 %}
+                                    Statut Reçu
+                                {% else %}
+                                    Avancer le statut
+                                {% endif %}
+                            </button>
                         </form>
                     </td>
                     <td>
