@@ -54,6 +54,9 @@ class CommandeListView(ListView):
         commande_id = request.POST.get('commande_id')
         commande = Commande.objects.get(id=commande_id)
         form = CommandeStatusForm(request.POST, instance=commande)
+        print(form.is_valid())
+        print(form.errors)
+        print(request.POST)
         if form.is_valid() and 'advance_status' in request.POST:
             commande.advance_status()
         if commande.status == 2:  # Si le statut est "Reçue"

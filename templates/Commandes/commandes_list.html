@@ -25,6 +25,7 @@
                         <form method="post" action="{% url 'commande_list' %}">
                             {% csrf_token %}
                             <input type="hidden" name="commande_id" value="{{ commande.id }}">
+                            <input type="hidden" name="status" value="{{ commande.status }}">
                             <button type="submit" name="advance_status" class="btn btn-primary" {% if commande.status == 2 %}disabled{% endif %}>
                                 {% if commande.status == 2 %}
                                     Statut Reçu
