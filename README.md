@@ -56,6 +56,29 @@ On a donc maintenant un modèle qui lie un fournisseur à des produits et des pr
 
 ## Ajout des commandes
 
+Dans la logique de l'application, une commande est une liste de produits commandés par un client sur un même fournisseur.
+L'objectif était de permettre d'ajouter les commandes et de les associer à des produits.
+
+### Changements
+
+- Création du modèle `Commande`
+- Ajout de la relation `CommandeProduct` entre `Commande` et `Produit`
+- Comme une commande est sur un même fournisseur, une commande est aussi liée à un fournisseur
+
+On a donc maintenant un modèle qui lie une commande à des produits et des produits à des commandes, ainsi donc à un fournisseur.
+
+### Tâches réalisées sur cette partie
+
+- [x] Création du modèle `Commande`
+- [x] Création de la relation `CommandeProduct`
+- [x] Ajout de la fenêtre de toutes les commandes pour les administateurs et uniquement pour eux. Personne d'autre ne peut voir les commandes.
+- [x] Ajout du CRUD pour les commandes pour les administateurs
+- [x] Si une commande est 'passée' ou 'reçue', on ne peut plus la modifier ou la supprimer, sinon si elle est 'en préparation' alors on peut la modifier ou la supprimer.
+- [x] Possibilité de passer une commande uniquement si on est administrateur
+
+
+![MCD ajout commandes](MCD/MCD_ajout_commandes.png)
+
 
 
 
