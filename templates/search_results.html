@@ -53,8 +53,7 @@
                 <div class="col-md-4">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <h5 class="card-title">{{ item.code }}</h5>
-                            <p class="card-text">{{ item.product.name }}</p>
+                            <h5 class="card-title">{{ item.product.name }}</h5>
                             <a href="{% url 'item-detail' item.id %}">
                                 <button>Détails</button>
                             </a>
@@ -66,7 +65,7 @@
     {% else %}
         <p>Aucun item trouvé.</p>
     {% endif %}
-    
+
     <h2>Fournisseur</h2>
     {% if fournisseurs %}
         <div class="row">
@@ -74,7 +73,7 @@
                 <div class="col-md-4">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <h5 class="card-title text-center">{{ fournisseur.name }}</h5>
+                            <h5 class="card-title">{{ fournisseur.name }}</h5>
                             <a href="{% url 'supplier-detail' fournisseur.id %}">
                                 <button>Détails</button>
                             </a>
@@ -86,6 +85,6 @@
     {% else %}
         <p>Aucun fournisseur trouvé.</p>
     {% endif %}
-    
-                            
+
+
 {% endblock %}

@@ -2,7 +2,8 @@
 {% load custom_filters %}
 {% block content %}
     <h1>{{product.name}}</h1>
-    <div class="table">
+    {% if fournisseurs %}
+        <div class="table">
         <table class="table">
             <thead>
                 <tr>
@@ -20,10 +21,15 @@
                         <td>{{ fournit.fournisseur.name }}</td>
                         <td>{{ fournit.stock }}</td>
                     </tr>
+                    
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    {% else %}
+        <p>Aucun fournisseur pour ce produit</p>
+    {% endif %}
+    
     
     <a href="{% url 'product-list' %}" class="btn btn-primary">Retour à la liste des produits</a>
     
