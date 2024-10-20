@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Accueil{% endblock %}
+{% block content %}
+<h1>Accueil</h1>
+<p>Bienvenue sur notre appli DJANGO</p>
+<p>Vous pouvez gérer les produits, les attributs et les items</p>
+<p>Vous pouvez aussi gérer les utilisateurs</p>
+    
+<a href="{% url 'product-list' %}" class="btn btn-primary">Accéder aux produits</a>
+    
+{% endblock %}

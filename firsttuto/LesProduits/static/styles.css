@@ -1,3 +1,26 @@
-h1 {
-    color : red;
+html {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+footer .col-md-4 {
+    border-left: 2px solid white;
+    padding-left: 15px;
+}
+
+footer .col-md-4:first-child {
+    border-left: none;
+}
+
+.list-unstyled li {
+    margin-bottom: 10px; /* Adjust the value as needed */
 }

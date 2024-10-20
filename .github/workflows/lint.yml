@@ -1,0 +1,43 @@
+name: Lint Check
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run pylint
+      id: pylint
+      run: |
+        pylint your_module_or_package > pylint_report.txt || true
+        pylint_score=$(tail -n 2 pylint_report.txt | head -n 1 | awk '{print $7}')
+        echo "Pylint score: $pylint_score"
+        echo "::set-output name=score::$pylint_score"
+
+    - name: Check pylint score
+      run: |
+        score=${{ steps.pylint.outputs.score }}
+        if (( $(echo "$score < 9" | bc -l) )); then
+          echo "Votre score Pylint est inférieur à 9. Échec du de l'actions."
+          exit 1
+        else
+          echo "Votre score Pylint est supérieur ou égal à 9. Passage de l'actions."
+        fi
+    - name: Analysing the code with mypy
+      run: |
+        make typehint
+        

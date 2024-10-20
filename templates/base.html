@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 {% load static %}
+{% load custom_filters %}
 <html lang="fr">
-    <head>
-        <meta charset="utf -8">
-        <title>{% block title %}{% endblock %}</title>
-        {% block styles %}
-            <link rel="stylesheet" href="{% static 'styles.css' %}" />
-            <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}">
-        {% endblock %}
-    </head>
-    <body>
+
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% block styles %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}">
+    {% endblock %}
+</head>
+
+<body>
     {% block nav %}
+
         <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Tous les produits' %}">Produits</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'About' %}">À propos</a>
+                        <a class="nav-link" href="{% url 'product-list' %}">Produits</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'attribute-list' %}">Déclinaisons</a>
@@ -26,36 +27,74 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'item-list' %}">Items</a>
                     </li>
+                    <li>
+                        <a class="nav-link" href="{% url 'supplier-list' %}">Fournisseurs</a>
+                    </li>
+                    {% if user|is_admin %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'commande_list' %}">Commandes</a>
+                        </li>
+                    {% endif %}
                     {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
                         </li>
-                    {%else%}
+                    {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'connexion' %}">Connexion</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'register' %}">Inscription</a>
                         </li>
-                    {%endif%}
+                    {% endif %}
                 </ul>
             </div>
-        </nav >
-            {% block menu %}
-                
-            {% endblock %}
+
+            <!-- Barre de recherche -->
+            <form class="form-inline ml-auto" method="GET" action="{% url 'search' %}">
+                <div class="input-group">
+                    <input class="form-control" type="text" name="search" placeholder="Rechercher..."
+                        value="{{ request.GET.search }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="submit">Rechercher</button>
+                    </div>
+                </div>
+            </form>
+        </nav>
     {% endblock %}
     <main role="main" class="container top-pushed">
         <div class="jumbotron">
             {% block content %}
-                
             {% endblock %}
         </div>
-    </main >
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 - Que à moi </p>
+    </main>
+   <footer class="bg-dark text-light py-4">
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <h5>À propos</h5>
+                <p>Ce site a été créé pour vous offrir les meilleurs produits et services. Nous nous efforçons d'offrir une expérience utilisateur optimale.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Liens utiles</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'product-list' %}" class="btn btn-light text-black">Produits</a></li>
+                    <li><a href="{% url 'Contact' %}" class="btn btn-light text-black">Contactez-nous</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contact</h5>
+                <p>Adresse: 11 rue d'Illiers 45000 Orléans</p>
+                <p>Téléphone: +33 6 67 63 20 09</p>
+            </div>
         </div>
-    </footer>
-    </body>
+        <div class="row">
+            <div class="col text-center">
+                <p class="mb-0">&copy; 2024 - Mon entreprise. Tous droits réservés.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+
 </html>

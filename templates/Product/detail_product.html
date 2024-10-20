@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% block content %}
+    <h1>{{product.name}}</h1>
+    <div class="table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Prix HT</th>
+                    <th>Prix TTC</th>
+                    <th>Fournisseur</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fournit in fournisseurs %}
+                    <tr>
+                        <td>{{ fournit.price_ht }}</td>
+                        <td>{{ fournit.price_ttc}}</td>
+                        <td>{{ fournit.fournisseur.name }}</td>
+                        <td>{{ fournit.stock }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <a href="{% url 'product-list' %}" class="btn btn-primary">Retour à la liste des produits</a>
+    
+    {% if user|is_admin %}
+        <h2>Les stocks sont au plus bas?</h2>
+        <!-- Formulaire pour créer une commande -->
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {{ order_form.as_p }}
+            <button type="submit" class="btn btn-primary">Commander</button>
+        </form>
+    {% endif %}
+
+    <script>
+        function updateStock() {
+            var fournisseurSelect = document.getElementById('id_fournisseur');
+            var selectedOption = fournisseurSelect.options[fournisseurSelect.selectedIndex];
+            var stock = selectedOption.getAttribute('data-stock');
+            document.getElementById('fournisseur-stock').innerText = stock;
+        }
+
+        // Appel de la fonction pour mettre à jour le stock au chargement de la page
+        updateStock();
+    </script>
+{% endblock %}

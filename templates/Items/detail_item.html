@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
 {% block title %}
     Mon application DJANGO
 {% endblock %}
@@ -6,9 +7,8 @@
     <h1>{{titremenu}}</h1>
 {% endblock %}
 {% block content %}
-<h2>{{ productitem.code }}</h2>
+<h2>{{ productitem.product }}</h2>
 <ul>
-    <li>Produit : {{ productitem.product }}</li>
     {% for attribute in attributes %}
         <li>{{ attribute.product_attribute.name }} : {{ attribute.value }}</li>
     {% empty %}
@@ -16,6 +16,8 @@
     {% endfor %}
 </ul>
 <a href="{% url 'item-list' %}" class="btn btn-primary mt-2">Retour</a>
-<a href="{% url 'item-update' productitem.id %}" class="btn btn-warning mt-2">Modifier</a>
-<a href="{% url 'item-delete' productitem.id %}" class="btn btn-danger mt-2">Supprimer</a>
+    {% if user|is_admin %}
+        <a href="{% url 'item-update' productitem.id %}" class="btn btn-warning mt-2">Modifier</a>
+        <a href="{% url 'item-delete' productitem.id %}" class="btn btn-danger mt-2">Supprimer</a>
+    {% endif %}
 {% endblock %}

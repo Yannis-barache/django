@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load custom_filters %}
 {% block content %}
     <!-- Barre de recherche -->
     <p class="lead mb-3 ml-0">Rechercher un élément...</p>
@@ -14,26 +14,33 @@
         <thead>
             <tr>
                 <th>Nom</th>
-                <th>Prix HT</th>
-                <th>Prix TTC</th>
                 <th>Disponibilité</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for product in prdcts %}
                 <tr>
-                    <td><a href="{% url 'detail_produit' product.id %}">{{product.name}}</a></td>
-                    <td>{{product.price_ht}}</td>
-                    <td>{{product.price_ttc}}</td>
+                    <td>{{product.name}}</td>
                     {% if product.status == 0 %}
                         <td>Indisponible</td>
                     {% else %}
                         <td>Disponible</td>
                     {% endif %}
+                    <td>
+                        
+                        <a href="{% url 'detail_produit' product.id %}" class="btn btn-primary">Détail</a>
+                        {% if user|is_admin %}
+                            <a href="{% url 'product-update' product.id %}" class="btn btn-warning">Modifier</a>
+                            <a href="{% url 'product-delete' product.id %}" class="btn btn-danger">Supprimer</a>
+                        {% endif %}
+                        
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'product-add' %}">Créer un nouveau produit</a>
-    
+        {% if user|is_admin %}
+            <a href="{% url 'product-add' %}" class="btn btn-success">Créer un nouveau produit</a>
+        {% endif %}
 {% endblock %}

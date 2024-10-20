@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Détail du fournisseur{% endblock %}
+{% block content %}
+    <h1>Détail du fournisseur {{ supplier.name }}</h1>
+    
+    <h2>Les produits:</h2>
+    
+    {% if products %}
+        <p class="lead">Produits proposés par {{ supplier.name }} :</p>
+    <br>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Prix HT</th>
+                <th>Prix TTC</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td><a href="{% url 'detail_produit' product.product.id %}">{{ product.product.name }}</a></td>
+                    <td>{{ product.price_ht }}</td>
+                    <td>{{ product.price_ttc }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="lead"> {{supplier.name}} ne propose aucun produit.</p>
+    {% endif %}
+    <a href="{% url 'supplier-list' %}" class="btn btn-primary mt-2">Retour à la liste des fournisseurs</a>
+{% endblock %}

@@ -1,0 +1,53 @@
+<!-- templates/Commandes/commandes_list.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="my-4">Liste des commandes</h1>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Fournisseur</th>
+                <th>Utilisateur</th>
+                <th>Quantité</th>
+                <th>Date de commande</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commande in commandes %}
+                <tr>
+                    <td>{{ commande.fournisseur.name }}</td>
+                    <td>{{ commande.user.username }}</td>
+                    <td>{{ commande.get_quantity }}</td>
+                    <td>{{ commande.date_commande }}</td>
+                    <td>{{ commande.get_status_display }}</td>
+                    <td>
+                        <form method="post" action="{% url 'commande_list' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="commande_id" value="{{ commande.id }}">
+                            <button type="submit" name="advance_status" class="btn btn-primary" {% if commande.status == 2 %}disabled{% endif %}>
+                                {% if commande.status == 2 %}
+                                    Statut Reçu
+                                {% else %}
+                                    Avancer le statut
+                                {% endif %}
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <a href="{% url 'commande-detail' commande.id %}" class="btn btn-primary">Détail</a>
+                        {% if commande.status == 0 %}
+                            <a href="{% url 'commande-update' commande.id %}" class="btn btn-warning">Modifier</a>
+                            <a href="{% url 'commande-delete' commande.id %}" class="btn btn-danger">Supprimer</a>
+                        {% elif commande.status == 1 %}
+                            <p>Non modifiable.</p>
+                        {% elif commande.status == 2 %}
+                            <p>Visionnage seulement.</p>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'commande-create' %}" class="btn btn-primary">Nouvelle commande</a>
+{% endblock %}
