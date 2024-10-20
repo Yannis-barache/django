@@ -121,7 +121,7 @@ class CommandeProductForm(forms.ModelForm):
 class CommandeStatusForm(forms.ModelForm):
     class Meta:
         model = Commande
-        fields = '__all__'
+        fields = ['status']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
