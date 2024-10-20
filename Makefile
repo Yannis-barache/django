@@ -1,4 +1,3 @@
-TESTS = tests/*/*.py
 MODULES = firsttuto/*.py firsttuto/*/*.py
 MODULES_TESTED = firsttuto/*.py firsttuto/*/*.py
 
@@ -6,10 +5,6 @@ MODULES_TESTED = firsttuto/*.py firsttuto/*/*.py
 .PHONY: typehint
 typehint:
 	mypy --ignore-missing-imports ${MODULES_TESTED}
-
-.PHONY: tests
-tests:
-	python3 -m unittest -v -b ${TESTS}
 
 .PHONY: lint
 lint:
@@ -19,10 +14,6 @@ lint:
 format:
 	yapf -ir ${MODULES}
 
-.PHONY: coverage
-coverage:
-	python3 -m coverage run -m unittest -v -b ${TESTS}
-	python3 -m coverage report -m ${MODULES_TESTED}
 
 .PHONY: clean
 clean:
@@ -44,4 +35,8 @@ loaddata:
 .PHONY: run
 run:
 	python3 manage.py runserver
+
+.PHONY : tests
+tests:
+	./manage.py test firsttuto.LesProduits.tests
 

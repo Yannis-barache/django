@@ -17,13 +17,46 @@
 Ce dépot était un projet de test pour apprendre à utiliser Django. 
 Maintenant il est utilisé pour réaliser un TP noté.
 
-Le projet de base comportée une application de gestion de produits. Le but du projet est de rajouter des fournisseurs et des commandes.
+Le projet de base comportait une application de gestion de produits. Le but du projet est de rajouter des fournisseurs et des commandes.
 
 ## Installation
 
 1. Cloner le dépot
 2. Exécuter `./setup.sh` pour mettre en place tout le projet et peupler la BD
-3. Exécuter `python manage.py runserver` pour lancer le serveur de développement
+3. Exécuter `make run` pour lancer le serveur de développement
+
+## Commandes importantes
+
+### Mettre en place le projet
+
+```bash
+./setup.sh
+```
+
+Sans installation de bootstrap
+
+```bash
+./setup.sh --skip-bootstrap
+```
+
+### Lancer le serveur de développement
+
+```bash
+make run
+```
+
+### Lancer les tests
+
+```bash
+make tests
+```
+
+### Peupler la base de données
+
+```bash
+make loaddata
+```
+
 
 # Analyse du sujet TD noté
 
@@ -79,16 +112,3 @@ On a donc maintenant un modèle qui lie une commande à des produits et des prod
 
 ![MCD ajout commandes](MCD/MCD_ajout_commandes.png)
 
-
-
-
-
-## Commandes importantes
-
-- `python manage.py runserver` : lance le serveur de développement
-- `python manage.py makemigrations` : crée les migrations
-- `python manage.py migrate` : applique les migrations
-- `python manage.py createsuperuser` : crée un super utilisateur
-- `python manage.py startapp` : crée une application
-- `python manage.py shell` : ouvre la console Python
-- `python manage.py sqlmigrate 0001 LesProduits` : affiche le SQL d'une migration
