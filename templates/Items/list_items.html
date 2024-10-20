@@ -11,7 +11,6 @@
     </form>
 <table class="table">
     <thead>
-        <th>Code</th>
         <th>Produit</th>
         <th>Attributs associés</th>
         <th>Actions</th>
@@ -19,7 +18,6 @@
     <tbody>
         {% for item in productitems %}
         <tr>
-            <td>{{ item.code }}</td>
             <td>{{ item.product.name }}</td>
             <td>
                 {% for attribute in item.attributes.all %}

@@ -348,7 +348,7 @@ class ProductDeleteView(DeleteView):
     success_url = reverse_lazy('product-list')
 
 
-@method_decorator(login_required, name='dispatch')
+
 class ProductAttributeListView(ListView):
     """
     Vue pour afficher la liste des attributs
@@ -423,7 +423,7 @@ class ProductAttributeDeleteView(DeleteView):
     success_url = reverse_lazy('attribute-list')
 
 
-@method_decorator(login_required, name='dispatch')
+
 class ProductItemListView(ListView):
     """
     Vue pour afficher la liste des déclinaisons
