@@ -46,8 +46,7 @@ python manage.py migrate
 echo "Creation d'un superuser suivez les prompts"
 python manage.py createsuperuser
 
-# Populate the database with initial data if you have a fixture
-# Uncomment the following line if you have a fixture file
+
 python manage.py loaddata db.json
 
 # Run the development server
