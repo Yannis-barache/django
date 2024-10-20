@@ -66,4 +66,26 @@
     {% else %}
         <p>Aucun item trouvé.</p>
     {% endif %}
+    
+    <h2>Fournisseur</h2>
+    {% if fournisseurs %}
+        <div class="row">
+            {% for fournisseur in fournisseurs %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{ fournisseur.name }}</h5>
+                            <a href="{% url 'supplier-detail' fournisseur.id %}">
+                                <button>Détails</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Aucun fournisseur trouvé.</p>
+    {% endif %}
+    
+                            
 {% endblock %}

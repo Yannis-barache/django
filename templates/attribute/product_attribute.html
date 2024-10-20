@@ -45,6 +45,8 @@
     {% endfor %}
     </tbody>
 </table>
-    <button type="button" class="btn btn-primary" onclick="window.location.href='{% url 'attribute-create' %}'">Créer un nouvel attribut</button>
+    {% if user|is_admin %}
+        <button type="button" class="btn btn-primary" onclick="window.location.href='{% url 'attribute-create' %}'">Créer un nouvel attribut</button>
+    {% endif %}
     
 {% endblock %}

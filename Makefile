@@ -36,6 +36,7 @@ clean:
 .PHONY: verif
 verif: clean typehint lint coverage format clean
 
+
 .PHONY: loaddata
 loaddata:
 	python3 manage.py loaddata db.json

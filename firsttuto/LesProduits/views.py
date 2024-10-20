@@ -373,7 +373,6 @@ class ProductAttributeListView(ListView):
         return context
 
 
-@method_decorator(login_required, name='dispatch')
 class ProductAttributeDetailView(DetailView):
     model = ProductAttribute
     template_name = "attribute/detail_attribute.html"
@@ -446,7 +445,6 @@ class ProductItemListView(ListView):
         return context
 
 
-@method_decorator(login_required, name='dispatch')
 class ProductItemDetailView(DetailView):
     model = ProductItem
     template_name = "Items/detail_item.html"
@@ -530,6 +528,8 @@ def SupplierDetail(request, pk):
     })
 
 
+
+@method_decorator(login_required, name='dispatch')
 class SupplierCreateView(CreateView):
     """
     Vue pour créer un nouveau fournisseur
@@ -559,7 +559,7 @@ class SupplierCreateView(CreateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
-
+@method_decorator(login_required, name='dispatch')
 class SupplierUpdateView(UpdateView):
     """
     Vue pour mettre à jour un fournisseur
@@ -592,7 +592,7 @@ class SupplierUpdateView(UpdateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
-
+@method_decorator(login_required, name='dispatch')
 class SupplierDeleteView(DeleteView):
     model = Fournisseur
     template_name = 'Supplier/delete_supplier.html'
@@ -605,12 +605,15 @@ def SearchView(request):
     attributes = ProductAttribute.objects.filter(name__icontains=query)
     items = ProductItem.objects.filter(
         Q(code__icontains=query) | Q(product__name__icontains=query))
+    fournisseurs = Fournisseur.objects.filter(
+        Q(name__icontains=query))
 
     context = {
         'query': query,
         'products': products,
         'attributes': attributes,
         'items': items,
+        'fournisseurs': fournisseurs
     }
     return render(request, 'search_results.html', context)
 
