@@ -12,6 +12,9 @@
 [![Yannis BARACHE](https://img.shields.io/badge/Yannis%20Barache-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Yannis-barache)
 [![Khalil ABADA](https://img.shields.io/badge/Khalil%20Abada-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Khalil-45)
 
+## Lien de la vidéo
+
+[![Lien de la vidéo](https://img.shields.io/badge/Lien%20de%20la%20vidéo-FF00?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com/file/d/1FNEoxCfpqIoXt_JGYiYzFlF0jJ_phsj6/view?usp=sharing)
 ## Objectif
 
 Ce dépot était un projet de test pour apprendre à utiliser Django. 
