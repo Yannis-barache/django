@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
 {% block title %}Liste des fournisseurs{% endblock %}
 {% block content %}
     <h1>Liste des fournisseurs</h1>
@@ -15,14 +16,18 @@
                     <td>{{ supplier.name }}</td>
                     <td>
                         <a href="{% url 'supplier-detail' supplier.id %}" class="btn btn-primary">Détail</a>
-                        <a href="{% url 'supplier-update' supplier.id %}" class="btn btn-warning">Modifier</a>
-                        <a href="{% url 'supplier-delete' supplier.id %}" class="btn btn-danger">Supprimer</a>
+                        {% if user|is_admin %}
+                            <a href="{% url 'supplier-update' supplier.id %}" class="btn btn-warning">Modifier</a>
+                            <a href="{% url 'supplier-delete' supplier.id %}" class="btn btn-danger">Supprimer</a>
+                        {% endif %}
                     </td>
                 </tr>
                 
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'supplier-create' %}" class="btn btn-success">Créer un fournisseur</a>
+    {% if user|is_admin %}
+        <a href="{% url 'supplier-create' %}" class="btn btn-success">Créer un fournisseur</a>
+    {% endif %}
 {% endblock %}
 

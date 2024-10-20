@@ -23,6 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path("__debug__/", include("debug_toolbar.urls")),
-    path("home", TemplateView.as_view(template_name="about.html")),
     path("", TemplateView.as_view(template_name="accueil.html")),
 ]

@@ -9,7 +9,6 @@ urlpatterns = [
          views.ProductListView.as_view(),
          name='product-list'),
     path('contact', views.ContactView, name='Contact'),
-    path('about', views.About, name='About'),
     path('search/', views.SearchView, name='search'),
     path('email-sent', views.EmailSent, name='email-sent'),
     path('product/<pk>',

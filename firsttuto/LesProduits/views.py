@@ -187,10 +187,6 @@ class ProductListView(ListView):
         return context
 
 
-def About(request):
-    return render(request, 'about.html')
-
-
 def ContactView(request):
     titreh1 = "Contact us !"
     if request.method == 'POST':

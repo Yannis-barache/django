@@ -22,9 +22,6 @@
                         <a class="nav-link" href="{% url 'product-list' %}">Produits</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'About' %}">À propos</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'attribute-list' %}">Déclinaisons</a>
                     </li>
                     <li class="nav-item">
@@ -71,11 +68,34 @@
             {% endblock %}
         </div>
     </main>
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 - Que à moi </p>
+   <footer class="bg-dark text-light py-4">
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <h5>À propos</h5>
+                <p>Ce site a été créé pour vous offrir les meilleurs produits et services. Nous nous efforçons d'offrir une expérience utilisateur optimale.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Liens utiles</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'product-list' %}" class="btn btn-light text-black">Produits</a></li>
+                    <li><a href="{% url 'Contact' %}" class="btn btn-light text-black">Contactez-nous</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contact</h5>
+                <p>Adresse: 123 Rue Exemple, Ville, Pays</p>
+                <p>Téléphone: +123 456 7890</p>
+                <p>Email: contact@exemple.com</p>
+            </div>
         </div>
-    </footer>
+        <div class="row">
+            <div class="col text-center">
+                <p class="mb-0">&copy; 2024 - Mon entreprise. Tous droits réservés.</p>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 
 </html>
